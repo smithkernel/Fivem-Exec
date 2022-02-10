@@ -1,4 +1,4 @@
-# lua Executor Bypass
+# lua Executor Bypass (was detected)
 > Fivem exec free that is practical and effective.
 
 ### Credit : speedy
