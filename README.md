@@ -3,7 +3,7 @@
 
 ### Credit : speedy
 
-### Join Discord : https://discord.gg/hjnuP6Ksct
+### Join Discord : https://discord.gg/YV9Ut3q4Yf
 
 
 #### 1. Create Folder in C:\Test
