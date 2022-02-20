@@ -1,9 +1,9 @@
 # lua Executor Bypass (was detected)
 > Fivem exec free that is practical and effective.
 
-### Credit : speedy
+#### Credit : speedy
 
-### [Discord.gg/Sarnax](https://discord.com/invite/sarnax)
+### Sell Cheating Private / Source code Contact discord  [Discord.gg/Sarnax](https://discord.com/invite/sarnax) 
 
 
 #### 1. Create Folder in C:\Test
