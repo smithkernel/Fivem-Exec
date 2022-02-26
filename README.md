@@ -4,6 +4,7 @@
 #### Credit : speedy
 
 ### FOR SUPPORT : [Discord.gg/Sarnax](https://discord.com/invite/sarnax) 
+> #### Discord : Sarnax#9999
 
 
 #### 1. Create Folder in C:\Test
