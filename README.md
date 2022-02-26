@@ -1,7 +1,6 @@
 # lua Executor Bypass (was detected)
 > Fivem exec free that is practical and effective.
 
-#### Credit : speedy
 
 ### FOR SUPPORT : [Discord.gg/Sarnax](https://discord.com/invite/sarnax) 
 > #### Discord : Sarnax#9999
