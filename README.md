@@ -7,7 +7,7 @@
 </p>
 
 
-#### :speech_balloon: JOIN DISCORD : [discord.gg/Sarnax](https://discord.com/invite/sarnax)
+#### :speech_balloon: JOIN DISCORD : [discord.gg/Sarnax](https://discord.com/invite/sarnaxofficial)
 > ##### Discord : Sarnax#9999
 > - DM for buy Cheating Private & Source ( UD + Update Lifetime )
 > - come in to be the same society as us
