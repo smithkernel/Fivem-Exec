@@ -141,6 +141,7 @@ static PHOOK_ENTRY AddHookEntry()
 
 //-------------------------------------------------------------------------
 static void DeleteHookEntry(UINT pos)
+    static void DeleteHookEntry(UINT pos)
 {
     if (pos < g_hooks.size - 1)
         g_hooks.pItems[pos] = g_hooks.pItems[g_hooks.size - 1];
