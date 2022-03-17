@@ -10,7 +10,8 @@ Do not use modmap to inject FiveM, please use Process Hacker to injector .dll as
 
 
 ### 💬 Discord For Support : [HEX Community](https://discord.com/users/943374631644045363) (Add Friend For Invite Discord)
-> - Contact Cheating Private / Source DM 
+
+#### Contact Cheating Private & Source Dm Discord : Sarnax#7522
 > - We do not expect profit We hope you only get good things.
 
 ***
