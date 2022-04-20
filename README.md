@@ -1,6 +1,7 @@
-### LUA EXEC ( detected )
-
+### LUA EXEC
+```sh-session
 🛑 Do not use modmap to inject FiveM, please use Process Hacker to injector .dll as it is safer. Wish you happy playing cheating.
+```
 ***
   <p align="center">
     <a href="https://discord.com/users/943374631644045363">
