@@ -1,6 +1,6 @@
-### LUA EXEC 
+### LUA EXEC ( DETECT )
 
-Do not use modmap to inject FiveM, please use Process Hacker to injector .dll as it is safer. Wish you happy playing cheating.
+🛑 Do not use modmap to inject FiveM, please use Process Hacker to injector .dll as it is safer. Wish you happy playing cheating.
 ***
   <p align="center">
     <a href="https://discord.com/users/943374631644045363">
@@ -8,13 +8,20 @@ Do not use modmap to inject FiveM, please use Process Hacker to injector .dll as
     </a>
 </p>
 
+<p align="center">
+    <a href="https://discord.com/users/943374631644045363">
+        <img title="Sarnax discord" alt="SarnaxLii's discord" src="https://discordapp.com/api/guilds/928580076633739274/widget.png?style=banner2"/>
+    </a>
+</p>
 
-### 💬 JOIN DISCORD / PRICES  : [HEX COMMUNITY](https://discord.com/users/943374631644045363) Add friend for invite
-> - Dm for Create Cheating Private ( Cannot detect because it is constantly being updated )
-> - We do not expect profit We hope you only get good things.
+* ` SELL CHEATING PRIVATE / SPOOFER / SOURCE CODE / ETC `
+* ` IF YOU WANT A SAFE CHEATING PRIVATE , THINK OF ME`
+* ` SAFE 100% IF BANNED = REFUND`
+* ` UPDATE LIFETIME & SUPPORT 24 HR `
+
+🤓・To order, please add a friend to request an invitation to the Discord server.
 
 ***
-
 
 #### 1. Create Folder in C:\Test
 > put ur lua file there rename it to "Test.lua"
