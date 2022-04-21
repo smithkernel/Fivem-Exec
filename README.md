@@ -21,7 +21,9 @@
 * ` UPDATE LIFETIME & SUPPORT 24 HR `
 
 🤓・To order, please add a friend to request an invitation to the Discord server.
-
+ ```sh-session
+If you can't join the server please add me to invite discord server : Sarnax#7522
+```          
 ***
 
 #### 1. Create Folder in C:\Test
