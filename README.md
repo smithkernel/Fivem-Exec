@@ -1,4 +1,4 @@
-### LUA EXEC
+### LUA EXEC BYPASS 
 ```sh-session
 🛑 Do not use modmap to inject FiveM, please use Process Hacker to injector .dll as it is safer. Wish you happy playing cheating.
 ```
@@ -14,6 +14,8 @@
         <img title="Sarnax discord" alt="SarnaxLii's discord" src="https://discordapp.com/api/guilds/928580076633739274/widget.png?style=banner2"/>
     </a>
 </p>
+
+### 📌・  JOIN DISCORD / BUY : [HEX COMMUNITY](https://discord.gg/6ZdJwQ7Dmk) 
 
 * ` SELL CHEATING PRIVATE / SPOOFER / SOURCE CODE / ETC `
 * ` IF YOU WANT A SAFE CHEATING PRIVATE , THINK OF ME`
