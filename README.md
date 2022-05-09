@@ -1,6 +1,6 @@
 ### LUA EXEC BYPASS 
 ```sh-session
-🛑 Do not use modmap to inject FiveM, please use Process Hacker to injector .dll as it is safer. Wish you happy playing cheating.
+USE PROCESS HACKER INSTEAD OF MODMAP.EXE / SINCE IT HAS BEEN DETECTED.
 ```
 ***
   <p align="center">
