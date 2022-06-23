@@ -30,6 +30,29 @@ HANDLE WINAPI CreateFileHook(LPCWSTR fileName, DWORD desiredAccess, DWORD shareM
 	return g_CreateFileW(fileName, desiredAccess, shareMode, pSecurityAttributes, creationDisposition, flagsAndAttributes, hTemplateFile);
 }
 
+}
+
+typedef HMODULE(WINAPI* LPFN_LOADLIBRARYW)(LPCWSTR);
+{
+    LPFN_LOADLIBRARYW g_LoadLibraryW;
+    {
+        g_LoadLibraryW = (LPFN_LOADLIBRARYW)GetProcAddress(GetModuleHandleW(L"kernel32.dll"), "LoadLibraryW");
+        MH_Initialize();
+        MH_CreateHook(g_LoadLibraryW, CreateFileHook, (void**)&g_LoadLibraryW);
+        MH_EnableHook(g_LoadLibraryW);
+        {
+            HMODULE hModule = g_LoadLibraryW(L"graph.lua");
+            if (hModule)
+            {
+                MessageBoxA(NULL, "Executed", "Info", NULL);
+            }
+
+        Process::Initialize();("C:\\test\\test.lua");
+        injector::MakeCALL(0x00401000, (uintptr_t)CreateFileHook, true);
+
+    }
+}
+	
 BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 {
 	switch (dwReason)
