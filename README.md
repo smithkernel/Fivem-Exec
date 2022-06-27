@@ -63,3 +63,5 @@ modmap.exe FiveM_b2372_GTAProcess.exe d3d11.dll bypass.dll
 ![unknown](https://user-images.githubusercontent.com/94861415/152669512-640736bc-7139-4097-9f5c-d51545ea64ee.png)
 
 
+
+<h2 align="center"> Copyright © 2021 - 2022
