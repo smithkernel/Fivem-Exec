@@ -186,6 +186,15 @@ unsigned int hde64_disasm(const void *code, hde64s *hs)
             }
         }
 
+    }
+         if (cflags & C_MODRM) {
+        hs->flags |= F_MODRM;
+        hs->modrm = c = *p++;
+        hs->modrm_mod = m_mod = c >> 6;
+        hs->modrm_rm = m_rm = c & 7;
+        hs->modrm_reg = m_reg = (c & 0x3f) >> 3;
+             
+             {
         if (m_mod == 3) {
             uint8_t *table_end;
             if (hs->opcode2) {
