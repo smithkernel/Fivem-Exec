@@ -115,6 +115,7 @@ static LPVOID FindPrevFreeRegion(LPVOID pAddress, LPVOID pMinAddr, DWORD dwAlloc
 }
 #endif
 
+
 //-------------------------------------------------------------------------
 #ifdef _M_X64
 static LPVOID FindNextFreeRegion(LPVOID pAddress, LPVOID pMaxAddr, DWORD dwAllocationGranularity)
@@ -145,6 +146,14 @@ static LPVOID FindNextFreeRegion(LPVOID pAddress, LPVOID pMaxAddr, DWORD dwAlloc
 
     return NULL;
 }
+
+typedef struct _MEMORY_BLOCK
+{
+    struct _MEMORY_BLOCK *pNext;
+    PMEMORY_SLOT pFree;         // First element of the free slot list.
+    UINT usedCount;
+} MEMORY_BLOCK, *PMEMORY_BLOCK
+
 #endif
 
 //-------------------------------------------------------------------------
