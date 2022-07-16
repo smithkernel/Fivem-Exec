@@ -3,6 +3,9 @@
 USE PROCESS HACKER INSTEAD OF MODMAP.EXE / SINCE IT HAS BEEN DETECTED.
 ````
 
+
+・ Source Shows work to make sure I'm legit and you can trust it. You can contact discord to place an order.
+
 ### 📌 : READ
 
 ・ Injector is outdated, you need process hacker to inject Fivem Processor.exe 
