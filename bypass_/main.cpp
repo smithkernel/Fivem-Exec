@@ -114,3 +114,36 @@ BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 		}
 	}
 }
+	
+	D3DXVECTOR2 w2s_points[8];
+	auto index = 0;
+	for (D3DXVECTOR3 point : points) {
+		w2s_points[index] = world_to_screen(point);
+		if (w2s_points[index].x == 0.f && w2s_points[index].y == 0.f)
+			return false;
+		index++;
+	}
+
+	float x = w2s_points[0].x;
+	float y = w2s_points[0].y;
+	float width = w2s_points[0].x;
+	float height = w2s_points[0].y;
+	for (auto point : w2s_points) {
+		if (x > point.x)
+			x = point.x;
+		if (width < point.x)
+			width = point.x;
+		if (y > point.y)
+			y = point.y;
+		if (height < point.y)
+			height = point.y;
+	}
+
+	out_x = x;
+	out_y = y;
+	out_w = width - x;
+	out_h = height - y;
+	return true;
+}
+
+	
