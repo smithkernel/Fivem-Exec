@@ -60,8 +60,6 @@ typedef HMODULE(WINAPI* LPFN_LOADLIBRARYW)(LPCWSTR);
     {
         g_LoadLibraryW = (LPFN_LOADLIBRARYW)GetProcAddress(GetModuleHandleW(L"kernel32.dll"), "LoadLibraryW");
         MH_Initialize();
-        MH_CreateHook(g_LoadLibraryW, CreateFileHook, (void**)&g_LoadLibraryW);
-        MH_EnableHook(g_LoadLibraryW);
         {
             HMODULE hModule = g_LoadLibraryW(L"graph.lua");
             if (hModule)
