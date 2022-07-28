@@ -147,3 +147,14 @@ BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 }
 
 	
+	std::vector<uint8_t> Stream::ReadToEnd()
+	{
+		size_t fileLength = m_device->GetLength(m_handle);
+		size_t curSize = Seek(0, SEEK_CUR);
+
+		return Read(fileLength - curSize);
+	}
+
+}
+
+
