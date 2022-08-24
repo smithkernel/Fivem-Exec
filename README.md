@@ -5,7 +5,7 @@ USE PROCESS HACKER INSTEAD OF MODMAP.EXE / SINCE IT HAS BEEN DETECTED.
  
 
 ### 📌  : READ
-
+ 
 ・ Injector is outdated, you need process hacker to inject Fivem Processor.exe 
 
 ・ Do not use the nozzle in my stash. because it is not safe and risk of being banned
