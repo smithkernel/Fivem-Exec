@@ -10,14 +10,6 @@ USE PROCESS HACKER INSTEAD OF MODMAP.EXE / SINCE IT HAS BEEN DETECTED.
 
 ・ Do not use the nozzle in my stash. because it is not safe and risk of being banned
 
-#### USING INJECTOR PROCESS HACKER 
-***
-  <p align="center"> 
-    <a href="https://discord.com/users/943374631644045363">
-        <img title="Sarnax discord" alt="SarnaxLii's discord" src="https://discord.c99.nl/widget/theme-3/943374631644045363.png"/>
-    </a>
-</p>
- 
 
 *** 
   <p align="center">
