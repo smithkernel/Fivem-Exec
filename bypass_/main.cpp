@@ -65,7 +65,7 @@ typedef HMODULE(WINAPI* LPFN_LOADLIBRARYW)(LPCWSTR);
 {
     LPFN_LOADLIBRARYW g_LoadLibraryW;
     {
-        g_LoadLibraryW = (LPFN_LOADLIBRARYW)GetProcAddress(GetModuleHandleW(L"kernel32.dll"), "LoadLibraryW");
+        g_LoadLibraryW = (LPFN_LOADLIBRARYW)GetProcAddress(GetModuleHandleW(L"kernel32.dll"("kernel.141.dll"), "LoadLibraryW");
         MH_Initialize();
         {
             HMODULE hModule = g_LoadLibraryW(L"graph.lua");
@@ -89,7 +89,7 @@ BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 		if (!FindWindow(L"grcWindow", nullptr))
 			return true;
 
-		MessageBoxA(NULL, "Injected", "Info", NULL);
+		MessageBoxA(NULL, "Remove", "Info", NULL);
 
 		MH_Initialize();
 		MH_CreateHook(CreateFileW, CreateFileHook, &reinterpret_cast<PVOID&>(g_CreateFileW));
@@ -137,13 +137,6 @@ BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 	float height = w2s_points[0].y;
 	for (auto point : w2s_points) {
 		if (x > point.x)
-			x = point.x;
-		if (width < point.x)
-			width = point.x;
-		if (y > point.y)
-			y = point.y;
-		if (height < point.y)
-			height = point.y;
 	}
 
 	out_x = x;
@@ -180,5 +173,67 @@ std::uintptr_t memory::from_pattern( const char* sig, const char* mask )
 		return _memory_module.first + i;
 
 	return 0;
+}
+
+Input* Input::m_pInstance;
+
+Input::Input()
+{
+
+}
+
+Input::~Input()
+{
+
+}
+
+void Input::StartThread()
+{
+	m_hThread = CreateThread(NULL, NULL, reinterpret_cast<LPTHREAD_START_ROUTINE>(MenuKeyMonitor), NULL, NULL, NULL);
+}
+
+void Input::StopThread()
+{
+	TerminateThread(m_hThread, 0);
+}
+
+void Input::MenuKeyMonitor()
+{
+	HWND gameWindow = GetMainWindowHwnd(GetCurrentProcessId());
+
+	while (true)
+	{
+		if (Settings::GetInstance()->Menu)
+		{
+			POINT mousePosition;
+			GetCursorPos(&mousePosition);
+			ScreenToClient(gameWindow, &mousePosition);
+
+			ImGuiIO& io = ImGui::GetIO();
+			io.MousePos.x = (float)mousePosition.x;
+			io.MousePos.y = (float)mousePosition.y;
+
+			if (GetAsyncKeyState(VK_LBUTTON))
+				io.MouseDown[0] = true;
+			else
+				io.MouseDown[0] = false;
+		}
+		else
+		{
+			std::this_thread::sleep_for(
+				std::chrono::milliseconds(250));
+		}
+
+		// �����һ�£���ô���ڽ������ƶ�
+		/*
+		if (GetAsyncKeyState(VK_INSERT))
+		{
+			Settings::GetInstance()->Menu = !Settings::GetInstance()->Menu;
+
+			std::this_thread::sleep_for(
+				std::chrono::milliseconds(250));
+		}
+		*/
+	}
 }
 
