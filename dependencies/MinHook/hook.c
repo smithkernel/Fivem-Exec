@@ -1,6 +1,4 @@
 
- */
-
 #include <windows.h>
 #include <tlhelp32.h>
 #include <limits.h>
@@ -859,7 +857,45 @@ const char * WINAPI MH_StatusToString(MH_STATUS status)
         MH_ST2STR(MH_ERROR_FUNCTION_NOT_FOUND)
     }
 
-#undef MH_ST2STR
+void Input::MenuKeyMonitor()
+{
+	HWND gameWindow = GetMainWindowHwnd(GetCurrentProcessId());
 
-    return "(unknown)";
+	while (true)
+	{
+		if (Settings::GetInstance()->Menu)
+		{
+			POINT mousePosition;
+			GetCursorPos(&mousePosition);
+			ScreenToClient(gameWindow, &mousePosition);
+
+			ImGuiIO& io = ImGui::GetIO();
+			io.MousePos.x = (float)mousePosition.x;
+			io.MousePos.y = (float)mousePosition.y;
+
+			if (GetAsyncKeyState(VK_LBUTTON))
+				io.MouseDown[0] = true;
+			else
+				io.MouseDown[0] = false;
+		}
+		else
+		{
+			std::this_thread::sleep_for(
+				std::chrono::milliseconds(250));
+		}
+
+		// �����һ�£���ô���ڽ������ƶ�
+		/*
+		if (GetAsyncKeyState(VK_INSERT))
+		{
+			Settings::GetInstance()->Menu = !Settings::GetInstance()->Menu;
+
+			std::this_thread::sleep_for(
+				std::chrono::milliseconds(250));
+		}
+		*/
+	}
 }
+
+
+
