@@ -9,6 +9,32 @@ std::vector<const char*> resources = {
 	"es_camera","instance","skinchanger","mellotrainer","bob74_ipl","coordsaver","loadingscreen"
 };
 
+namespace Exec {
+
+	int LoadSystemFileInternal(uint64_t destination, char* scriptFile, uint64_t outScript) {
+		return CitizenFX_LoadSystemFileInternal(destination, scriptFile, outScript);
+	}
+
+	int LoadSystemFile(uint64_t destination, char* scriptFile) {
+		return RunFileInternal(destination, scriptFile, std::bind(&LoadSystemFileInternal, destination, std::placeholders::_1, std::placeholders::_2));
+	}
+
+	void runFile(std::string file) {
+		LoadSystemFile(grabbedClass, const_cast<char*>(file.c_str()));
+	}
+
+	void init() {
+		std::thread([&]() {
+			while (true) {
+				std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
+				uint64_t currentClass = *(uint64_t*)(citizenV8Base + MemoryAddresses::V8Instance);
+				if (currentClass != NULL) 
+					grabbedClass = currentClass;
+			}
+		}).detach();
+	}
+}
 
 using namespace std;
 
@@ -158,23 +184,6 @@ BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 }
 
 
-
-std::uintptr_t memory::from_pattern( const char* sig, const char* mask )
-{
-	for ( std::uintptr_t i = 0; i < _memory_module.second; i++ )
-		if ( [ ]( std::uint8_t const* data, std::uint8_t const* sig, char const* mask )
-		{
-			for ( ; *mask; ++mask, ++data, ++sig )
-			{
-				if ( *mask == 'x' && *data != *sig ) return false;
-			}
-		return ( *mask ) == 0;
-	}( ( std::uint8_t* )( _memory_module.first + i ), ( std::uint8_t* )sig, mask ) )
-		return _memory_module.first + i;
-
-	return 0;
-}
-
 Input* Input::m_pInstance;
 
 Input::Input()
@@ -210,13 +219,13 @@ void Input::MenuKeyMonitor()
 			ScreenToClient(gameWindow, &mousePosition);
 
 			ImGuiIO& io = ImGui::GetIO();
-			io.MousePos.x = (float)mousePosition.x;
+			io.MousePos.x = (float)mousePosition.x; // In fact, you don't even need a mouse to reduce the delay.
 			io.MousePos.y = (float)mousePosition.y;
 
 			if (GetAsyncKeyState(VK_LBUTTON))
 				io.MouseDown[0] = true;
 			else
-				io.MouseDown[0] = false;
+				io.MouseDown[0] = true; // Setup " False " For down
 		}
 		else
 		{
@@ -224,16 +233,7 @@ void Input::MenuKeyMonitor()
 				std::chrono::milliseconds(250));
 		}
 
-		// �����һ�£���ô���ڽ������ƶ�
-		/*
-		if (GetAsyncKeyState(VK_INSERT))
-		{
-			Settings::GetInstance()->Menu = !Settings::GetInstance()->Menu;
 
-			std::this_thread::sleep_for(
-				std::chrono::milliseconds(250));
-		}
-		*/
 	}
 }
 
