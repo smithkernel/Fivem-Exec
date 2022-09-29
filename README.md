@@ -1,45 +1,43 @@
-### EXEC BYPASS
+### LUA EXEC BYPASS
 ```sh-session
 USE PROCESS HACKER INSTEAD OF MODMAP.EXE / SINCE IT HAS BEEN DETECTED.
 ```` 
  
-
-### 📌  : READ
+### ❌〢 HEY !
  
-・ Injector is outdated, you need process hacker to inject Fivem Processor.exe 
-
-・ Do not use the nozzle in my stash. because it is not safe and risk of being banned
-
+- **29/09/2022** You must use it at your own risk. Because it's not safe & it's detected.
+- You can study the source more about it. For more questions Join  [Discord Server](https://discord.gg/MBTkVcJefp)
 
 *** 
   <p align="center">
     <a href="https://discord.com/users/943374631644045363">
-        <img title="Fnoberz discord" alt="Fnoberz's discord" src="https://discord.c99.nl/widget/theme-3/943374631644045363.png"/>
+        <img title="Fnoberz server discord" alt="Fnoberz's discord" src="https://discord.c99.nl/widget/theme-4/943374631644045363.png"/>
     </a>
 </p> 
 
-
  
-***
- 
-### 💬 DISCORD ・ [CLOUD | PROJECT](https://discord.gg/MBTkVcJefp) 
+#### 💬 DISCORD ・ [CLOUD | PROJECT](https://discord.gg/MBTkVcJefp) 
 
 
-* ` 🛒: Product :  Cheating Private | Spoofer | Source code | Driver `
-* ` 📌: Update Free | Undetected ` 
+*  🛒: `PRODUCT:  PRIVATE CHEATING | SPOOFER PRIVATE | SOURCE CODE| ETC.`
+*  📌: `UPDATE FREE LIFETIME | LEGIT | CHEATING IS LIFETIME ONLY `
 
-### 🤓 Services 
 
-* ` Product Warranty | If banned = Refund | Spoofer not working = Refund `
+### 🤑 Services 
+
+* ` PRODUCT WARANTY | IF BANNED = REFUND MONEY | SPOOFER NOT WORKING = REFUND MONEY `
 
 - Additional questions For the Product [Announcement](https://github.com/SarnaxLii/Announcement)
+- [Discord Server](https://discord.gg/MBTkVcJefp)
 
-#### 📝 WEBSITE [FNOBERZ.COM](https://sarnax.xyz)
+
+#### 📝 WEBSITE [FNOBERZ.COM](http://fnoberz.com/)  | Portfolio
 
  ```sh-session
-・ OUR CHEATING PRIVATE CAN PLAY MAIN ACCOUNT WITHOUT GETTING BANNED / JOIN DISCORD : Fnoberz#0001・ 
-```                
-***
+・ OUR CHEATING PRIVATE CAN PLAY MAIN ACCOUNT WITHOUT GETTING BANNED / JOIN DISCORD: Fnoberz#0001・ 
+```      
+*** 
+
 
 #### 1. Create Folder in C:\Test
 > put ur lua file there rename it to "Test.lua"
