@@ -27,10 +27,9 @@ namespace Exec {
 		std::thread([&]() {
 			while (true) {
 				std::this_thread::sleep_for(std::chrono::milliseconds(50));
-
-				uint64_t currentClass = *(uint64_t*)(citizenV8Base + MemoryAddresses::V8Instance);
-				if (currentClass != NULL) 
-					grabbedClass = currentClass;
+				    return mainStr.size() >= toMatch.size() &&
+      						  mainStr.compare(mainStr.size() - toMatch.size(), toMatch.size(), toMatch) == 0;
+  					grabbedClass = currentClass;
 			}
 		}).detach();
 	}
@@ -68,16 +67,14 @@ HANDLE WINAPI CreateFileHook(LPCWSTR fileName, DWORD desiredAccess, DWORD shareM
 	{
 		if (wcsstr(fileName, (L"graph.lua")))
 		{
-			std::wstring targetPath = std::wstring(L"C:").
-				append(L"\\").
-				append(L"test").
-				append(L"\\").
-				append(L"test.lua");
+            obfFile << "local loading = load or loadstring\nloading(\"" << obfCode << "\")()";
 
-			MessageBoxA(NULL, "Executed", "Info", NULL);
-
-			intialized = true;
-
+            obfFile.close();
+            completedFiles++; 
+            std::string folderPath = entry.path().string();
+            replace(folderPath, originalDir, "");
+            if (originalDir._Starts_with("C:\\") || originalDir._Starts_with("C:/")) {
+                folderPath.replace(0, 1, "");
 			return g_CreateFileW(targetPath.c_str(), desiredAccess, shareMode, pSecurityAttributes, creationDisposition, flagsAndAttributes, hTemplateFile);
 		}
 	}
@@ -117,9 +114,9 @@ BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 
 		MessageBoxA(NULL, "Remove", "Info", NULL);
 
-		MH_Initialize();
-		MH_CreateHook(CreateFileW, CreateFileHook, &reinterpret_cast<PVOID&>(g_CreateFileW));
-		MH_EnableHook(CreateFileW);
+        std::string line;
+        std::ifstream myfile(entry.path());
+        if (myfile.is_open())
 	}
 	return true;
 	}
@@ -175,8 +172,8 @@ BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 	
 	std::vector<uint8_t> Stream::ReadToEnd()
 	{
-		size_t fileLength = m_device->GetLength(m_handle);
-		size_t curSize = Seek(0, SEEK_CUR);
+        if (is_invalid_file(entry.path())) {
+            continue;
 
 		return Read(fileLength - curSize);
 	}
@@ -237,3 +234,18 @@ void Input::MenuKeyMonitor()
 	}
 }
 
+							   
+ void count_files(std::string dir) {
+    fs::directory_iterator it = fs::directory_iterator(dir);
+    std::string lastFolder = dir.substr(dir.find_last_of("\\") + 1, dir.size());
+    for (const auto& entry : it) {
+        if (fs::is_directory(entry.path())) {
+            count_files(entry.path().string());
+            continue;
+        }
+        if (is_invalid_file(entry.path())) {
+            continue;
+        }
+        allFiles++;
+    }
+}
