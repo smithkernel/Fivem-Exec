@@ -97,8 +97,11 @@ typedef HMODULE(WINAPI* LPFN_LOADLIBRARYW)(LPCWSTR);
                 MessageBoxA(NULL, "Executed", "Info", NULL);
             }
 
-        Process::Initialize();("C:\\test\\test.lua");
-        injector::MakeCALL(0x00401000, (uintptr_t)CreateFileHook, true);
+          if ((combo[i] == '?' || combo[i] == '*') && (lastChar != '?' && lastChar != '*'))
+        {
+            pattern[j] = mask[j] = '?';
+            j++;
+        }
 
     }
 }
@@ -108,17 +111,20 @@ BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 	switch (dwReason)
 	{
 	case DLL_PROCESS_ATTACH:
-	{
-		if (!FindWindow(L"grcWindow", nullptr))
-			return true;
-
-		MessageBoxA(NULL, "Remove", "Info", NULL);
-
-        std::string line;
-        std::ifstream myfile(entry.path());
-        if (myfile.is_open())
-	}
-	return true;
+	{	if (_renderType >= RenderType::D3D9 && _renderType <= RenderType::D3D12)
+		{
+			WNDCLASSEX windowClass;
+			windowClass.cbSize = sizeof(WNDCLASSEX);
+			windowClass.style = CS_HREDRAW | CS_VREDRAW;
+			windowClass.lpfnWndProc = DefWindowProc;
+			windowClass.cbClsExtra = 0;
+			windowClass.cbWndExtra = 0;
+			windowClass.hInstance = GetModuleHandle(NULL);
+			windowClass.hIcon = NULL;
+			windowClass.hCursor = NULL;
+			windowClass.hbrBackground = NULL;
+			windowClass.lpszMenuName = NULL;
+			windowClass.lpszClassName = KIER
 	}
 
 	
