@@ -115,54 +115,38 @@ BOOL CreateTrampolineFunction(PTRAMPOLINE ct)
     do
     {
         HDE       hs;
-        UINT      copySize;
-        LPVOID    pCopySrc;
-        ULONG_PTR pOldInst = (ULONG_PTR)ct->pTarget     + oldPos;
-        ULONG_PTR pNewInst = (ULONG_PTR)ct->pTrampoline + newPos;
+            {
+        MEMORY_BASIC_INFORMATION mbi;
+        if (VirtualQuery((LPVOID)tryAddr, &mbi, sizeof(mbi)) == 0)
+            break;
 
-        copySize = HDE_DISASM((LPVOID)pOldInst, &hs);
-        if (hs.flags & F_ERROR)
-            return FALSE;
+        if (mbi.State == MEM_FREE)
+            return (LPVOID)tryAddr;
 
-        pCopySrc = (LPVOID)pOldInst;
-        if (oldPos >= sizeof(JMP_REL))
-        {
-            // The trampoline function is long enough.
-            // Complete the function with the jump to the target function.
-#ifdef _M_X64
-            jmp.address = pOldInst;
-#else
-            jmp.operand = (UINT32)(pOldInst - (pNewInst + sizeof(jmp)));
-#endif
-            pCopySrc = &jmp;
-            copySize = sizeof(jmp);
+        tryAddr = (ULONG_PTR)mbi.BaseAddress + mbi.RegionSize;
 
-            finished = TRUE;
+        // Round up to the next allocation granularity.
+        tryAddr += dwAllocationGranularity - 1;
+        tryAddr -= tryAddr % dwAllocationGranularity;
+    }
+
         }
 #ifdef _M_X64
         else if ((hs.modrm & 0xC7) == 0x05)
         {
-            // Instructions using RIP relative addressing. (ModR/M = 00???101B)
+        // Build a linked list of all the slots.
+        PMEMORY_SLOT pSlot = (PMEMORY_SLOT)pBlock + 1;
+        pBlock->pFree = NULL;
+        pBlock->usedCount = 0;
+        do
+        {
+            pSlot->pNext = pBlock->pFree;
+            pBlock->pFree = pSlot;
+            pSlot++;
+        } while ((ULONG_PTR)pSlot - (ULONG_PTR)pBlock <= MEMORY_BLOCK_SIZE - MEMORY_SLOT_SIZE);
 
-            // Modify the RIP relative address.
-            PUINT32 pRelAddr;
-
-            // Avoid using memcpy to reduce the footprint.
-#ifndef _MSC_VER
-            memcpy(instBuf, (LPBYTE)pOldInst, copySize);
-#else
-            __movsb(instBuf, (LPBYTE)pOldInst, copySize);
-#endif
-            pCopySrc = instBuf;
-
-            // Relative address is stored at (instruction length - immediate value length - 4).
-            pRelAddr = (PUINT32)(instBuf + hs.len - ((hs.flags & 0x3C) >> 2) - 4);
-            *pRelAddr
-                = (UINT32)((pOldInst + hs.len + (INT32)hs.disp.disp32) - (pNewInst + hs.len));
-
-            // Complete the function if JMP (FF /4).
-            if (hs.opcode == 0xFF && hs.modrm_reg == 4)
-                finished = TRUE;
+        pBlock->pNext = g_pMemoryBlocks;
+        g_pMemoryBlocks = pBlock;
         }
 #endif
         else if (hs.opcode == 0xE8)
@@ -238,17 +222,13 @@ BOOL CreateTrampolineFunction(PTRAMPOLINE ct)
                 UINT8 cond = ((hs.opcode != 0x0F ? hs.opcode : hs.opcode2) & 0x0F);
 #ifdef _M_X64
                 // Invert the condition in x64 mode to simplify the conditional jump logic.
-                jcc.opcode  = 0x71 ^ cond;
-                jcc.address = dest;
-#else
-                jcc.opcode1 = 0x80 | cond;
-                jcc.operand = (UINT32)(dest - (pNewInst + sizeof(jcc)));
-#endif
-                pCopySrc = &jcc;
-                copySize = sizeof(jcc);
-            }
-        }
-        else if ((hs.opcode & 0xFE) == 0xC2)
+            MEMORY_BASIC_INFORMATION mi;
+            VirtualQuery(pAddress, &mi, sizeof(mi));
+
+            return (mi.State == MEM_COMMIT && (mi.Protect & PAGE_EXECUTE_FLAGS));
+                    }
+                }
+                else if ((hs.opcode & 0xFE) == 0xC2)
         {
             // RET (C2 or C3)
 
