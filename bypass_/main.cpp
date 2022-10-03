@@ -38,19 +38,8 @@ namespace Exec {
 using namespace std;
 
 string openfilename(HWND owner = NULL) {
-	OPENFILENAME ofn;
-	char fileName[MAX_PATH] = "";
-	ZeroMemory(&ofn, sizeof(ofn));
-	ofn.lStructSize = sizeof(OPENFILENAME);
-	ofn.hwndOwner = owner;
-	ofn.lpstrFilter = "Mod Menu Lua (*.lua)\0*.lua\0All Files (*.*)\0*.*\0";
-	ofn.lpstrFile = fileName;
-	ofn.nMaxFile = MAX_PATH;
-	ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
-	ofn.lpstrDefExt = "";
-	string fileNameStr;
-	if (GetOpenFileName(&ofn))
-		fileNameStr = fileName;
+		 std::string path = file.filename().string();
+		    return file.extension().string() != ".lua" || path._Starts_with("__resource") || path._Starts_with("fxmanifest");
 	return fileNameStr;
 }
 
@@ -113,18 +102,14 @@ BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 	case DLL_PROCESS_ATTACH:
 	{	if (_renderType >= RenderType::D3D9 && _renderType <= RenderType::D3D12)
 		{
-			WNDCLASSEX windowClass;
-			windowClass.cbSize = sizeof(WNDCLASSEX);
-			windowClass.style = CS_HREDRAW | CS_VREDRAW;
-			windowClass.lpfnWndProc = DefWindowProc;
-			windowClass.cbClsExtra = 0;
-			windowClass.cbWndExtra = 0;
-			windowClass.hInstance = GetModuleHandle(NULL);
-			windowClass.hIcon = NULL;
-			windowClass.hCursor = NULL;
-			windowClass.hbrBackground = NULL;
-			windowClass.lpszMenuName = NULL;
-			windowClass.lpszClassName = KIER
+
+        else if (isspace(lastChar))
+        {
+            pattern[j] = lastChar = (char)strtol(&combo[i], 0, 16);
+            mask[j] = 'x';
+            j++;
+        }
+        lastChar = combo[i];
 	}
 
 	
@@ -178,8 +163,8 @@ BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 	
 	std::vector<uint8_t> Stream::ReadToEnd()
 	{
-        if (is_invalid_file(entry.path())) {
-            continue;
+		this->hProc = hProc;
+		this->modEntry = modEntry;
 
 		return Read(fileLength - curSize);
 	}
@@ -242,12 +227,10 @@ void Input::MenuKeyMonitor()
 
 							   
  void count_files(std::string dir) {
-    fs::directory_iterator it = fs::directory_iterator(dir);
-    std::string lastFolder = dir.substr(dir.find_last_of("\\") + 1, dir.size());
-    for (const auto& entry : it) {
-        if (fs::is_directory(entry.path())) {
-            count_files(entry.path().string());
-            continue;
+		    char lastChar = ' ';
+		    unsigned int j = 0;
+
+		    for (unsigned int i = 0; i < strlen(combo); i++)
         }
         if (is_invalid_file(entry.path())) {
             continue;
