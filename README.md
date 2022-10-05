@@ -77,3 +77,5 @@ modmap.exe FiveM_b2372_GTAProcess.exe d3d11.dll bypass.dll
 
 
 <h2 align="center"> Copyright © 2021 - 2022
+
+##### <p align="center">  FNOBERZ OFFICIAL / JOIN DISCORD [CLOUD PROJECT](https://discord.gg/JUwFCGHbV4)
