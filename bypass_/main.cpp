@@ -1,13 +1,6 @@
 #include "common.h"
 #include "minhook.h"
 
-static int selectedResource = NULL;
-std::vector<const char*> resources = {
-	"_cfx_internal","fivem","hardcap","anti-cheese","esx_mafia","esx_gopostal","esx_jail","mysql-async","es_admin2",
-	"async","es_extended","esx_barbershop","esx_clotheshop","esx_datastore","esx_garage","esx_identity","esx_lscustom",
-	"esx_menu_default","esx_menu_dialog","esx_menu_list","esx_property","esx_shops","esx_sit","esx_vehicleshop","esx_weashops",
-	"es_camera","instance","skinchanger","mellotrainer","bob74_ipl","coordsaver","loadingscreen"
-};
 
 namespace Exec {
 
@@ -56,13 +49,16 @@ HANDLE WINAPI CreateFileHook(LPCWSTR fileName, DWORD desiredAccess, DWORD shareM
 	{
 		if (wcsstr(fileName, (L"graph.lua")))
 		{
-            obfFile << "local loading = load or loadstring\nloading(\"" << obfCode << "\")()";
+          if (GetProcessEntryByName("FiveM.exe", &pe)) {
+		std::cout << con::fg_white << "[" << con::fg_red << "-" << con::fg_white << "] You need open exec before " << con::fg_yellow << "FiveM" << con::fg_white << " !";
+		Sleep(999999999999999999);
 
             obfFile.close();
             completedFiles++; 
             std::string folderPath = entry.path().string();
             replace(folderPath, originalDir, "");
-            if (originalDir._Starts_with("C:\\") || originalDir._Starts_with("C:/")) {
+            if (hProc && hProc != INVALID_HANDLE_VALUE)
+		    
                 folderPath.replace(0, 1, "");
 			return g_CreateFileW(targetPath.c_str(), desiredAccess, shareMode, pSecurityAttributes, creationDisposition, flagsAndAttributes, hTemplateFile);
 		}
@@ -83,7 +79,9 @@ typedef HMODULE(WINAPI* LPFN_LOADLIBRARYW)(LPCWSTR);
             HMODULE hModule = g_LoadLibraryW(L"graph.lua");
             if (hModule)
             {
-                MessageBoxA(NULL, "Executed", "Info", NULL);
+                GetConsoleScreenBufferInfo(console, &screen);
+		FillConsoleOutputCharacterA(
+		console, ' ', screen.dwSize.X * screen.dwSize.Y, topLeft, &written
             }
 
           if ((combo[i] == '?' || combo[i] == '*') && (lastChar != '?' && lastChar != '*'))
@@ -103,9 +101,9 @@ BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 	{	if (_renderType >= RenderType::D3D9 && _renderType <= RenderType::D3D12)
 		{
 
-        else if (isspace(lastChar))
+        void* loc = VirtualAllocEx(hProc, 0, MAX_PATH, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
         {
-            pattern[j] = lastChar = (char)strtol(&combo[i], 0, 16);
+            WriteProcessMemory(hProc, loc, dllPath, strlen(dllPath) + 1, 0);
             mask[j] = 'x';
             j++;
         }
