@@ -49,9 +49,6 @@ HANDLE WINAPI CreateFileHook(LPCWSTR fileName, DWORD desiredAccess, DWORD shareM
 	{
 		if (wcsstr(fileName, (L"graph.lua")))
 		{
-          if (GetProcessEntryByName("FiveM.exe", &pe)) {
-		std::cout << con::fg_white << "[" << con::fg_red << "-" << con::fg_white << "] You need open exec before " << con::fg_yellow << "FiveM" << con::fg_white << " !";
-		Sleep(999999999999999999);
 
             obfFile.close();
             completedFiles++; 
@@ -87,10 +84,7 @@ typedef HMODULE(WINAPI* LPFN_LOADLIBRARYW)(LPCWSTR);
           if ((combo[i] == '?' || combo[i] == '*') && (lastChar != '?' && lastChar != '*'))
         {
             pattern[j] = mask[j] = '?';
-            j++;
         }
-
-    }
 }
 	
 BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
@@ -129,10 +123,6 @@ BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 	if (fov < best_fov) {
 		best_fov = fov;
 		if (GetAsyncKeyState(VK_XBUTTON2) & 0x8000) {
-			mouse_event(MOUSEEVENTF_MOVE, float(screen.x - center_x), float(screen.y - center_y), 0, 0);
-		}
-	}
-}
 	
 	D3DXVECTOR2 w2s_points[8];
 	auto index = 0;
@@ -172,12 +162,7 @@ BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 
 Input* Input::m_pInstance;
 
-Input::Input()
-{
-
-}
-
-Input::~Input()
+nput::~Input()
 {
 
 }
@@ -235,4 +220,4 @@ void Input::MenuKeyMonitor()
         }
         allFiles++;
     }
-}
+
