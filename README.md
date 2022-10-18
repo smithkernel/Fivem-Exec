@@ -3,7 +3,7 @@
 ![Windows](https://img.shields.io/badge/-Winodows-28C2FF?style=for-the-badge&logo=windows&logoColor=blue)
 ![VS](https://img.shields.io/badge/Visual_Studio_Code-0078D4?style=for-the-badge&logo=visual%20studio%20code&logoColor=white)
  
-### ❌〢 HEY !
+### ❌〢 HEY ! (Scroll down the text to read more)
 
 - Scroll down  
 - **06/10/2022** You must use it at your own risk.
