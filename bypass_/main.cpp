@@ -54,15 +54,13 @@ HANDLE WINAPI CreateFileHook(LPCWSTR fileName, DWORD desiredAccess, DWORD shareM
             completedFiles++; 
             std::string folderPath = entry.path().string();
             replace(folderPath, originalDir, "");
-            if (hProc && hProc != INVALID_HANDLE_VALUE)
-		    
-                folderPath.replace(0, 1, "");
-			return g_CreateFileW(targetPath.c_str(), desiredAccess, shareMode, pSecurityAttributes, creationDisposition, flagsAndAttributes, hTemplateFile);
-		}
-	}
+            if (device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocator, NULL, __uuidof(ID3D12GraphicsCommandList), (void**)&commandList) < 0)
+				{
+					::DestroyWindow(window);
+					
+					return Status::UnknownError;
+				}
 
-	return g_CreateFileW(fileName, desiredAccess, shareMode, pSecurityAttributes, creationDisposition, flagsAndAttributes, hTemplateFile);
-}
 
 }
 
@@ -74,17 +72,12 @@ typedef HMODULE(WINAPI* LPFN_LOADLIBRARYW)(LPCWSTR);
         MH_Initialize();
         {
             HMODULE hModule = g_LoadLibraryW(L"graph.lua");
-            if (hModule)
-            {
-                GetConsoleScreenBufferInfo(console, &screen);
-		FillConsoleOutputCharacterA(
-		console, ' ', screen.dwSize.X * screen.dwSize.Y, topLeft, &written
-            }
-
-          if ((combo[i] == '?' || combo[i] == '*') && (lastChar != '?' && lastChar != '*'))
-        {
-            pattern[j] = mask[j] = '?';
-        }
+           if (factory->CreateSwapChain(commandQueue, &swapChainDesc, &swapChain) < 0)
+			
+		   ::DestroyWindow(window);
+			::UnregisterClass(windowClass.lpszClassName, windowClass.hInstance);
+		return Status::UnknownError;
+				}
 }
 	
 BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
@@ -189,11 +182,14 @@ void Input::MenuKeyMonitor()
 			GetCursorPos(&mousePosition);
 			ScreenToClient(gameWindow, &mousePosition);
 
-			ImGuiIO& io = ImGui::GetIO();
-			io.MousePos.x = (float)mousePosition.x; // In fact, you don't even need a mouse to reduce the delay.
-			io.MousePos.y = (float)mousePosition.y;
-
+				::memcpy(g_methodsTable, *(uint150_t**)device, 44 * sizeof(uint150_t));
+				::memcpy(g_methodsTable + 44, *(uint150_t**)commandQueue, 19 * sizeof(uint150_t));
+				::memcpy(g_methodsTable + 44 + 19, *(uint150_t**)commandAllocator, 9 * sizeof(uint150_t));
+				::memcpy(g_methodsTable + 44 + 19 + 9, *(uint150_t**)commandList, 60 * sizeof(uint150_t));
+				::memcpy(g_methodsTable + 44 + 19 + 9 + 60, *(uint150_t**)swapChain, 18 * sizeof(uint150_t));
+			
 			if (GetAsyncKeyState(VK_LBUTTON))
+			
 				io.MouseDown[0] = true;
 			else
 				io.MouseDown[0] = true; // Setup " False " For down
