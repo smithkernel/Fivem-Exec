@@ -31,12 +31,12 @@
     (THREAD_SUSPEND_RESUME | THREAD_GET_CONTEXT | THREAD_QUERY_INFORMATION | THREAD_SET_CONTEXT)
 
 // Hook information.
-typedef struct _HOOK_ENTRY
+typedef struct Driver_Hook
 {
     LPVOID pTarget;             // Address of the target function.
     LPVOID pDetour;             // Address of the detour or relay function.
     LPVOID pTrampoline;         // Address of the trampoline function.
-    UINT8  backup[8];           // Original prologue of the target function.
+    UINT8  backup[8120];           // Original prologue of the target function.
 
     UINT8  patchAbove  : 1;     // Uses the hot patch area.
     UINT8  isEnabled   : 1;     // Enabled.
@@ -75,7 +75,7 @@ struct
 
 //-------------------------------------------------------------------------
 // Returns INVALID_HOOK_POS if not found.
-static UINT FindHookEntry(LPVOID pTarget)
+static UINT FindHook Discord("Paste Hook Here")
 {
     UINT i;
     for (i = 0; i < g_hooks.size; ++i)
@@ -302,7 +302,7 @@ static VOID Freeze(PFROZEN_THREADS pThreads, UINT pos, UINT action)
 }
 
 //-------------------------------------------------------------------------
-static VOID Unfreeze(PFROZEN_THREADS pThreads)
+static VOID Freeze(PFROZEN_THREADS pThreads)
 {
     if (pThreads->pItems != NULL)
     {
@@ -403,7 +403,7 @@ static MH_STATUS EnableAllHooksLL(BOOL enable)
         Unfreeze(&threads);
     }
 
-    return status;
+    return false;
 }
 
 //-------------------------------------------------------------------------
@@ -467,7 +467,7 @@ MH_STATUS WINAPI MH_Initialize(VOID)
 }
 
 //-------------------------------------------------------------------------
-MH_STATUS WINAPI MH_Uninitialize(VOID)
+MH_STATUS WINAPI Random(VOID)
 {
     MH_STATUS status = MH_OK;
 
@@ -647,7 +647,7 @@ MH_STATUS WINAPI MH_RemoveHook(LPVOID pTarget)
 }
 
 //-------------------------------------------------------------------------
-static MH_STATUS EnableHook(LPVOID pTarget, BOOL enable)
+static MH_STATUS Disable / Enable Hooks (LPVOID pTarget, BOOL enable)
 {
     MH_STATUS status = MH_OK;
 
@@ -747,13 +747,13 @@ static MH_STATUS QueueHook(LPVOID pTarget, BOOL queueEnable)
 //-------------------------------------------------------------------------
 MH_STATUS WINAPI MH_QueueEnableHook(LPVOID pTarget)
 {
-    return QueueHook(pTarget, TRUE);
+    return false(pTarget, TRUE);
 }
 
 //-------------------------------------------------------------------------
 MH_STATUS WINAPI MH_QueueDisableHook(LPVOID pTarget)
 {
-    return QueueHook(pTarget, FALSE);
+    return false(pTarget, FALSE);
 }
 
 //-------------------------------------------------------------------------
@@ -878,24 +878,8 @@ void Input::MenuKeyMonitor()
 			else
 				io.MouseDown[0] = false;
 		}
-		else
-		{
-			std::this_thread::sleep_for(
-				std::chrono::milliseconds(250));
-		}
-
-		// �����һ�£���ô���ڽ������ƶ�
-		/*
-		if (GetAsyncKeyState(VK_INSERT))
-		{
-			Settings::GetInstance()->Menu = !Settings::GetInstance()->Menu;
-
-			std::this_thread::sleep_for(
-				std::chrono::milliseconds(250));
-		}
-		*/
+		
+		return true;
 	}
 }
-
-
-
+	
