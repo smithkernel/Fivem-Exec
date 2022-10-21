@@ -133,9 +133,7 @@ extern "C" {
     //   pDetour    [in]  A pointer to the detour function, which will override
     //                    the target function.
     //   ppOriginal [out] A pointer to the trampoline function, which will be
-    //                    used to call the original target function.
-    //                    This parameter can be NULL.
-    //   ppTarget   [out] A pointer to the target function, which will be used
+    //                    used to call the original target function.be used
     //                    with other functions.
     //                    This parameter can be NULL.
     MH_STATUS WINAPI MH_CreateHookApiEx(
@@ -174,7 +172,6 @@ extern "C" {
     //                queued to be disabled.
     MH_STATUS WINAPI MH_QueueDisableHook(LPVOID pTarget);
 
-    // Applies all queued changes in one go.
     MH_STATUS WINAPI MH_ApplyQueued(VOID);
 
     // Translates the MH_STATUS to its name as a string.
@@ -232,24 +229,4 @@ private:
 		{
 			if (resources[selectedResource] == "_cfx_internal")
 			{
-				MessageBoxA(NULL, "You can't execute in _cfx_interal", "redENGINE", MB_OK | MB_ICONERROR);
 				return;
-			}
-			else
-			{
-				
-			}
-		}	
-		ImGui::SameLine();
-		if (ImGui::Button(ICON_FA_FILE" Load from File", ImVec2(180, 30)))
-		{
-			// load file code
-		}
-			
-		ImGui::SameLine();
-		ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
-		ImGui::Combo("##resources", &selectedResource, resources.data(), resources.size());
-		ImGui::PopItemWidth();
-				
-	}
-}
