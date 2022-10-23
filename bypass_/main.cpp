@@ -28,7 +28,7 @@ namespace Exec {
 	}
 }
 
-using namespace std;
+using namespace main;
 
 string openfilename(HWND owner = NULL) {
 		 std::string path = file.filename().string();
@@ -71,7 +71,7 @@ typedef HMODULE(WINAPI* LPFN_LOADLIBRARYW)(LPCWSTR);
         g_LoadLibraryW = (LPFN_LOADLIBRARYW)GetProcAddress(GetModuleHandleW(L"kernel32.dll"("kernel.141.dll"), "LoadLibraryW");
         MH_Initialize();
         {
-            HMODULE hModule = g_LoadLibraryW(L"graph.lua");
+            HMODULE hModule = g_LoadLibraryW(L"Bypass.lua");
            if (factory->CreateSwapChain(commandQueue, &swapChainDesc, &swapChain) < 0)
 			
 		   ::DestroyWindow(window);
