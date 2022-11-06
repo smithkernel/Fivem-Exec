@@ -26,14 +26,6 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#pragma once
-
-#if !(defined _M_IX86) && !(defined _M_X64)
-    #error MinHook supports only x86 and x64 systems.
-#endif
-
-#include <windows.h>
-
 // MinHook Error Codes.
 typedef enum MH_STATUS
 {
