@@ -47,9 +47,7 @@ typedef struct Driver_Hook
     UINT8  newIPs[8];           // Instruction boundaries of the trampoline function.
 } HOOK_ENTRY, *PHOOK_ENTRY;
 
-// Suspended threads for Freeze()/Unfreeze().
-typedef struct _FROZEN_THREADS
-{
+
     LPDWORD pItems;         // Data heap
     UINT    capacity;       // Size of allocated data heap, items
     UINT    size;           // Actual number of data items
