@@ -71,9 +71,7 @@ namespace common.h {
 			HANDLE UniqueProcess;
 			HANDLE UniqueThread;
 		};
-
-		//https://processhacker.sourceforge.io/doc/ntpebteb_8h_source.html#l00166
-		struct TEB
+		struct Exec
 		{
 			NT_TIB NtTib;
 			PVOID EnvironmentPointer;
