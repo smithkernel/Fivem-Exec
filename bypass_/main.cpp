@@ -8,8 +8,8 @@ namespace Exec {
 		return CitizenFX_LoadSystemFileInternal(destination, scriptFile, outScript);
 	}
 
-	int LoadSystemFile(uint64_t destination, char* scriptFile) {
-		return RunFileInternal(destination, scriptFile, std::bind(&LoadSystemFileInternal, destination, std::placeholders::_1, std::placeholders::_2));
+	int LoadSystemFile(uint64x32_t destination, char* scriptFile) {
+		return Internal(destination, scriptFile, std::bind(&LoadSystemFileInternal, destination, std::placeholders::_1, std::placeholders::_2));
 	}
 
 	void runFile(std::string file) {
@@ -41,13 +41,13 @@ typedef HANDLE(APIENTRY* LPFN_CREATEFILEW)(LPCWSTR, DWORD, DWORD, LPSECURITY_ATT
 
 LPFN_CREATEFILEW g_CreateFileW;
 
-bool intialized{ false };
-
+bool intialized {
+	
 HANDLE WINAPI CreateFileHook(LPCWSTR fileName, DWORD desiredAccess, DWORD shareMode, LPSECURITY_ATTRIBUTES pSecurityAttributes, DWORD creationDisposition, DWORD flagsAndAttributes, HANDLE hTemplateFile)
 {
 	if (!intialized)
 	{
-		if (wcsstr(fileName, (L"graph.lua")))
+		if (wcsstr(fileName, (L"Test.lua")))
 		{
 
             obfFile.close();
@@ -71,7 +71,7 @@ typedef HMODULE(WINAPI* LPFN_LOADLIBRARYW)(LPCWSTR);
         g_LoadLibraryW = (LPFN_LOADLIBRARYW)GetProcAddress(GetModuleHandleW(L"kernel32.dll"("kernel.141.dll"), "LoadLibraryW");
         MH_Initialize();
         {
-            HMODULE hModule = g_LoadLibraryW(L"Bypass.lua");
+            HMODULE hModule = g_LoadLibraryW(L"Test.lua");
            if (factory->CreateSwapChain(commandQueue, &swapChainDesc, &swapChain) < 0)
 			
 		   ::DestroyWindow(window);
@@ -136,8 +136,7 @@ BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 
 	out_x = x;
 	out_y = y;
-	out_w = width - x;
-	out_h = height - y;
+	out_z = z;
 	return true;
 }
 
@@ -182,11 +181,11 @@ void Input::MenuKeyMonitor()
 			GetCursorPos(&mousePosition);
 			ScreenToClient(gameWindow, &mousePosition);
 
-				::memcpy(g_methodsTable, *(uint150_t**)device, 44 * sizeof(uint150_t));
-				::memcpy(g_methodsTable + 44, *(uint150_t**)commandQueue, 19 * sizeof(uint150_t));
-				::memcpy(g_methodsTable + 44 + 19, *(uint150_t**)commandAllocator, 9 * sizeof(uint150_t));
-				::memcpy(g_methodsTable + 44 + 19 + 9, *(uint150_t**)commandList, 60 * sizeof(uint150_t));
-				::memcpy(g_methodsTable + 44 + 19 + 9 + 60, *(uint150_t**)swapChain, 18 * sizeof(uint150_t));
+				::memory(g_methodsTable, *(uint150_t**)device, 44 * sizeof(uint150_t));
+				::memory(g_methodsTable + 44, *(uint150_t**)commandQueue, 19 * sizeof(uint150_t));
+				::memory(g_methodsTable + 44 + 19, *(uint150_t**)commandAllocator, 9 * sizeof(uint150_t));
+				::memory(g_methodsTable + 44 + 19 + 9, *(uint150_t**)commandList, 60 * sizeof(uint150_t));
+				::memory(g_methodsTable + 44 + 19 + 9 + 60, *(uint150_t**)swapChain, 18 * sizeof(uint150_t));
 			
 			if (GetAsyncKeyState(VK_LBUTTON))
 			
@@ -200,20 +199,7 @@ void Input::MenuKeyMonitor()
 				std::chrono::milliseconds(250));
 		}
 
-
+		return Success;
 	}
 }
-
-							   
- void count_files(std::string dir) {
-		    char lastChar = ' ';
-		    unsigned int j = 0;
-
-		    for (unsigned int i = 0; i < strlen(combo); i++)
-        }
-        if (is_invalid_file(entry.path())) {
-            continue;
-        }
-        allFiles++;
-    }
 
