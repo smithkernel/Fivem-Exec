@@ -8,7 +8,7 @@
 #include "trampoline.h"
 
 #ifndef ARRAYSIZE
-    #define ARRAYSIZE(A) (sizeof(A)/sizeof((A)[0]))
+#define ARRAYSIZE(A) (sizeof(A)/sizeof((A)[0]))
 #endif
 
 // Initial capacity of the HOOK_ENTRY buffer.
