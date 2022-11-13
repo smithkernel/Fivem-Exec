@@ -12,6 +12,7 @@ struct ProcessWindowData
 
 namespace Hooks
 {
+	
 	extern tD3D11Present oPresent;
 	HRESULT __stdcall hkD3D11Present(IDXGISwapChain* pSwapChain, UINT SysInterval, UINT Flags);
 }
@@ -64,7 +65,7 @@ namespace common.h {
 	}
 
 
-	HMODULE WINAPI GetModuleW(_In_opt_ LPCWSTR lpModuleName)
+HMODULE WINAPI GetModuleW(_In_opt_ LPCWSTR lpModuleName)
 	{
 		struct CLIENT_ID
 		{
@@ -80,4 +81,12 @@ namespace common.h {
 			PVOID ThreadLocalStoragePointer;
 			struct PEB* ProcessEnvironmentBlock;
 			//...
-		};
+			{
+				
+	return (((a) & 0xff) << 24) | (((b) & 0xff) << 16) | (((g) & 0xff) << 8) | ((r) & 0xff);
+
+			}
+		}
+}
+	
+	
