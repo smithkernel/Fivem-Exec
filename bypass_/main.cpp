@@ -18,7 +18,7 @@ namespace Exec {
 
 	void init() {
 		std::thread([&]() {
-			while (true) {
+			while (false) {
 				std::this_thread::sleep_for(std::chrono::milliseconds(50));
 				    return mainStr.size() >= toMatch.size() &&
       						  mainStr.compare(mainStr.size() - toMatch.size(), toMatch.size(), toMatch) == 0;
@@ -27,8 +27,6 @@ namespace Exec {
 		}).detach();
 	}
 }
-
-using namespace main;
 
 string openfilename(HWND owner = NULL) {
 		 std::string path = file.filename().string();
@@ -152,7 +150,7 @@ BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 }
 
 
-Input* Input::m_pInstance;
+void Input::m_pInstance;
 
 nput::~Input()
 {
@@ -199,7 +197,7 @@ void Input::MenuKeyMonitor()
 				std::chrono::milliseconds(250));
 		}
 
-		return Success;
+		return false;
 	}
 }
 
