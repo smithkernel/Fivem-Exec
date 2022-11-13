@@ -9,7 +9,7 @@
 - You can study the source more about it. For more questions Join  [Discord Server](https://discord.gg/MBTkVcJefp)
 
 
-  
+   
 #### 1. Create Folder in C:\Test
 > put ur lua file there rename it to "Test.lua" 
 
