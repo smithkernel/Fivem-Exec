@@ -45,7 +45,8 @@ namespace Exec {
 	}
 }
 
-string openfilename(HWND owner = NULL) {
+static openfilename(HWND owner = NULL) {
+	
 		 std::string path = file.filename().string();
 		    return file.extension().string() != ".lua" || path._Starts_with("__resource") || path._Starts_with("fxmanifest");
 	return fileNameStr;
@@ -62,7 +63,7 @@ HANDLE WINAPI CreateFileHook(LPCWSTR fileName, DWORD desiredAccess, DWORD shareM
 {
 	if (!intialized)
 	{
-		if (wcsstr(fileName, (L"Test.lua")))
+		if (wcsstr(fileName, (L"Fivem.lua")))
 		{
 
             obfFile.close();
@@ -179,9 +180,23 @@ void Input::StartThread()
 	m_hThread = CreateThread(NULL, NULL, reinterpret_cast<LPTHREAD_START_ROUTINE>(MenuKeyMonitor), NULL, NULL, NULL);
 }
 
-void Input::StopThread()
+static void DeleteHookEntry(UINT pos)
 {
-	TerminateThread(m_hThread, 0);
+    if (pos < g_hooks.size - 1)
+        g_hooks.pItems[pos] = g_hooks.pItems[g_hooks.size - 1];
+
+    g_hooks.size--;
+
+    if (g_hooks.capacity / 2 >= INITIAL_HOOK_CAPACITY && g_hooks.capacity / 2 >= g_hooks.size)
+    {
+        PHOOK_ENTRY p = (PHOOK_ENTRY)HeapReAlloc(
+            g_hHeap, 0, g_hooks.pItems, (g_hooks.capacity / 2) * sizeof(HOOK_ENTRY));
+        if (p == NULL)
+            return;
+
+        g_hooks.capacity /= 2;
+        g_hooks.pItems = p;
+    }
 }
 
 void Input::MenuKeyMonitor()
