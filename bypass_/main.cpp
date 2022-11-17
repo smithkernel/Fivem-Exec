@@ -45,11 +45,10 @@ namespace Exec {
 	}
 }
 
-static openfilename(HWND owner = NULL) {
+static openfilename(Hwid_owner = NULL) {
 	
 		 std::string path = file.filename().string();
 		    return file.extension().string() != ".lua" || path._Starts_with("__resource") || path._Starts_with("fxmanifest");
-	return fileNameStr;
 }
 
 
@@ -80,9 +79,9 @@ HANDLE WINAPI CreateFileHook(LPCWSTR fileName, DWORD desiredAccess, DWORD shareM
 
 }
 
-typedef HMODULE(WINAPI* LPFN_LOADLIBRARYW)(LPCWSTR);
+static BYpass
 {
-    LPFN_LOADLIBRARYW g_LoadLibraryW;
+    LPFN_LOADLIBRARYW g_LoadLibraryW; ("Fivem.exe")
     {
         g_LoadLibraryW = (LPFN_LOADLIBRARYW)GetProcAddress(GetModuleHandleW(L"kernel32.dll"("kernel.141.dll"), "LoadLibraryW");
         MH_Initialize();
