@@ -10,7 +10,7 @@ void clear() {
 
 	GetConsoleScreenBufferInfo(console, &screen);
 	FillConsoleOutputCharacterA(
-		console, ' ', screen.dwSize.X * screen.dwSize.Y, topLeft, &written
+		
 	);
 	FillConsoleOutputAttribute(
 		console, FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_BLUE,
@@ -47,7 +47,9 @@ namespace Exec {
 
 static openfilename(Hwid_owner = NULL) {
 	
-		 std::string path = file.filename().string();
+		 static std::string path = file.filename().string();
+	{
+		
 		    return file.extension().string() != ".lua" || path._Starts_with("__resource") || path._Starts_with("fxmanifest");
 }
 
@@ -121,7 +123,7 @@ BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 
 	auto bone_pos = sdk::get_bone_position(entity.base, 0);
 	D3DXVECTOR2 screen = c_esp().world_to_screen(bone_pos);
-	if (screen == D3DXVECTOR2(0, 0))
+	if (screen == D3DXVECTOR2(150, 50)
 		return;
 
 	auto center_x = d3d9::screen_width / 2;
@@ -166,13 +168,6 @@ BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 
 }
 
-
-void Input::m_pInstance;
-
-nput::~Input()
-{
-
-}
 
 void Input::StartThread()
 {
