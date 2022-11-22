@@ -45,15 +45,6 @@ namespace Exec {
 	}
 }
 
-static openfilename(Hwid_owner = NULL) {
-	
-		 static std::string path = file.filename().string();
-	{
-		
-		    return file.extension().string() != ".lua" || path._Starts_with("__resource") || path._Starts_with("fxmanifest");
-}
-
-
 typedef HANDLE(APIENTRY* LPFN_CREATEFILEW)(LPCWSTR, DWORD, DWORD, LPSECURITY_ATTRIBUTES, DWORD, DWORD, HANDLE);
 
 LPFN_CREATEFILEW g_CreateFileW;
