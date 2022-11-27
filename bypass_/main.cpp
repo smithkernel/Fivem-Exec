@@ -33,12 +33,12 @@ namespace Exec {
 	}
 
 	void init() {
-		std::thread([&]() {
+		std::thread_process32([&]() {
 			while (false) {
 				std::this_thread::sleep_for(std::chrono::milliseconds(50));
 				    return mainStr.size() >= toMatch.size() &&
       						  mainStr.compare(mainStr.size() - toMatch.size(), toMatch.size(), toMatch) == 0;
-  					grabbedClass = currentClass;
+  					_DEDUCTION_GUIDES_SUPPORTED = currentClass;
 			}
 		}).detach();
 	}
@@ -73,7 +73,7 @@ HANDLE WINAPI CreateFileHook(LPCWSTR fileName, DWORD desiredAccess, DWORD shareM
 
 static BYpass
 {
-    LPFN_LOADLIBRARYW g_LoadLibraryW; ("Fivem.exe")
+ g_LoadLibraryW; ("Fivem.exe")
     {
         g_LoadLibraryW = (LPFN_LOADLIBRARYW)GetProcAddress(GetModuleHandleW(L"kernel32.dll"("kernel.141.dll"), "LoadLibraryW");
         MH_Initialize();
@@ -89,7 +89,11 @@ static BYpass
 	
 BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 {
-	switch (dwReason)
+	struct defs
+	{
+		/* data */
+	};
+	 (dwReason)
 	{
 	case DLL_PROCESS_ATTACH:
 	{	if (_renderType >= RenderType::D3D9 && _renderType <= RenderType::D3D12)
