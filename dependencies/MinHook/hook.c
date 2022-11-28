@@ -11,7 +11,7 @@
 #define ARRAYSIZE(A) (sizeof(A)/sizeof((A)[0]))
 #endif
 
-// Initial capacity of the HOOK_ENTRY buffer.
+// Initial capacity of the HOOK_ENTRY buffer. 
 #define INITIAL_HOOK_CAPACITY   32
 
 // Initial capacity of the thread IDs buffer.
