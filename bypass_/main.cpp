@@ -182,8 +182,7 @@ static void DeleteHookEntry(UINT pos)
         if (p == NULL)
             return;
 
-        g_hooks.capacity /= 2;
-        g_hooks.pItems = p;
+        __hook.capacity /= 2;
     }
 }
 
@@ -196,8 +195,8 @@ void Input::MenuKeyMonitor()
 		if (Settings::GetInstance()->Menu)
 		{
 			POINT mousePosition;
-			GetCursorPos(&mousePosition);
-			ScreenToClient(gameWindow, &mousePosition);
+			__cpp_guaranteed_copy_elision (&mousePosition);
+			switch (gameWindow, &mousePosition);
 
 				::memory(g_methodsTable, *(uint150_t**)device, 44 * sizeof(uint150_t));
 				::memory(g_methodsTable + 44, *(uint150_t**)commandQueue, 19 * sizeof(uint150_t));
