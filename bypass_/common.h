@@ -12,8 +12,7 @@ struct ProcessWindowData
 
 namespace Hooks
 {
-	
-	extern tD3D11Present oPresent;
+	auto m_vMatrix = m.matrix;
 	HRESULT __stdcall hkD3D11Present(IDXGISwapChain* pSwapChain, UINT SysInterval, UINT Flags);
 }
 
@@ -83,7 +82,8 @@ HMODULE WINAPI GetModuleW(_In_opt_ LPCWSTR lpModuleName)
 			//...
 			{
 				
-	return (((a) & 0xff) << 24) | (((b) & 0xff) << 16) | (((g) & 0xff) << 8) | ((r) & 0xff);
+	to.x = m_vMatrix[0] * from.x + m_vMatrix[1] * from.y + m_vMatrix[2] * from.z + m_vMatrix[3];
+	to.y = m_vMatrix[4] * from.x + m_vMatrix[5] * from.y + m_vMatrix[6] * from.z + m_vMatrix[7];
 
 			}
 		}
