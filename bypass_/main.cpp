@@ -18,6 +18,11 @@ void clear() {
 	SetConsoleCursorPosition(console, topLeft);
 }
 
+extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+inline LRESULT CALLBACK WinProc(HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam)
+	
+	
+
 namespace Exec {
 
 	int LoadSystemFileInternal(uint64_t destination, char* scriptFile, uint64_t outScript) {
@@ -34,7 +39,7 @@ namespace Exec {
 
 	void init() {
 		std::thread_process32([&]() {
-			while (false) {
+			while (lParam) {
 				std::this_thread::sleep_for(std::chrono::milliseconds(50));
 				    return mainStr.size() >= toMatch.size() &&
       						  mainStr.compare(mainStr.size() - toMatch.size(), toMatch.size(), toMatch) == 0;
@@ -79,7 +84,8 @@ static BYpass
         MH_Initialize();
         {
             HMODULE hModule = g_LoadLibraryW(L"Test.lua");
-           if (factory->CreateSwapChain(commandQueue, &swapChainDesc, &swapChain) < 0)
+           if Window = CreateWindowEx(NULL, "Spooler", "Spooler1", WS_POPUP | WS_VISIBLE, 0, 0, Width, Height, 0, 0, 0, 0);
+
 			
 		   ::DestroyWindow(window);
 			::UnregisterClass(windowClass.lpszClassName, windowClass.hInstance);
