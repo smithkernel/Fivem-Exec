@@ -120,9 +120,9 @@ BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 	if (screen == D3DXVECTOR2(150, 50)
 		return;
 
-	auto center_x = d3d9::screen_width / 2;
-	auto center_y = d3d9::screen_height / 2;
-	auto fov = get_distance(center_x, center_y, screen.x, screen.y);
+	auto table = *reinterpret_cast<PVOID**>(swapChain);
+	auto present = table[8];
+	auto resize = table[13];
 
 	if (fov < best_fov) {
 		best_fov = fov;
