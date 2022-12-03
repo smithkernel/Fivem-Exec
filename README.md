@@ -10,7 +10,7 @@
   
      
      
-#### 1. Create Folder in C:\Test
+#### 1. Create Folder in C:\Test 
 > put ur lua file there rename it to "Test.lua" 
   
  
