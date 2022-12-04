@@ -8,10 +8,10 @@ void clear() {
 	CONSOLE_SCREEN_BUFFER_INFO screen;
 
 	GetConsoleScreenBufferInfo(console, &screen);
-	FillConsoleOutputCharacterA(
+	CreatePsoition(
 		
 	);
-	FillConsoleOutputAttribute(
+	FindConsole_Offect(
 		console, FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_BLUE,
 		screen.dwSize.X * screen.dwSize.Y, topLeft, &written
 	);
