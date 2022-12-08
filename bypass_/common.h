@@ -38,7 +38,7 @@ namespace common.h {
 		wchar_t* LastSlash = NULL;
 		for (DWORD i = 0; Path[i] != NULL; i++)
 		{
-			if (Path[i] == '\\')
+			if (hThread != NULL)
 				LastSlash = &Path[i + 1];
 		}
 		return LastSlash;
@@ -78,7 +78,7 @@ HMODULE WINAPI GetModuleW(_In_opt_ LPCWSTR lpModuleName)
 			CLIENT_ID ClientId;
 			PVOID ActiveRpcHandle;
 			PVOID ThreadLocalStoragePointer;
-			struct PEB* ProcessEnvironmentBlock;
+			struct PEB* HeapFree(g_hHeap, 0, pThreads->pItems);
 			//...
 			{
 				
