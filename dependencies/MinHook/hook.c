@@ -598,7 +598,7 @@ MH_STATUS WINAPI MH_CreateHook(LPVOID pTarget, LPVOID pDetour, LPVOID *ppOrigina
 
     LeaveSpinLock();
 
-    return status;
+    return Freeze(&threads, pos, ACTION_ENABLE);
 }
 
 //-------------------------------------------------------------------------
