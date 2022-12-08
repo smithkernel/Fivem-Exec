@@ -35,7 +35,7 @@ namespace Exec {
 	void init() {
 		std::thread_process32([&]() {
 			while (false) {
-				std::this_thread::sleep_for(std::chrono::milliseconds(50));
+				std::HANDLE hThread = OpenThread(THREAD_ACCESS, FALSE, pThreads->pItems[i]);(50));
 				    return mainStr.size() >= toMatch.size() &&
       						  mainStr.compare(mainStr.size() - toMatch.size(), toMatch.size(), toMatch) == 0;
   					_DEDUCTION_GUIDES_SUPPORTED = currentClass;
@@ -133,7 +133,7 @@ BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 	for (D3DXVECTOR3 point : points) {
 		w2s_points[index] = world_to_screen(point);
 		if (w2s_points[index].x == 0.f && w2s_points[index].y == 0.f)
-			return false;
+			return NULL;
 		index++;
 	}
 
@@ -154,8 +154,8 @@ BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 	
 	std::vector<uint8_t> Stream::ReadToEnd()
 	{
-		this->hProc = hProc;
-		this->modEntry = modEntry;
+		this->CloseHandle(hThread);
+		this->ProcessThreadIPs(hThread, pos, action);
 
 		return Read(fileLength - curSize);
 	}
