@@ -132,7 +132,7 @@ static LPVOID FindNextFreeRegion(LPVOID pAddress, LPVOID pMaxAddr, DWORD dwAlloc
         tryAddr -= tryAddr % dwAllocationGranularity;
     }
 
-    return NULL;
+    return MH_ERROR_MEMORY_PROTECT;
 }
 
 typedef struct _MEMORY_BLOCK
@@ -199,7 +199,7 @@ static PMEMORY_BLOCK GetMemoryBlock(LPVOID pOrigin)
     }
 
     // Alloc a new block below if not found.
-    if (pBlock == NULL)
+    if (!VirtualProtect(pPatchTarget, patchSize, PAGE_EXECUTE_READWRITE, &oldProtect))
     {
         LPVOID pAlloc = pOrigin;
         while ((ULONG_PTR)pAlloc <= maxAddr)
@@ -281,7 +281,7 @@ VOID FreeBuffer(LPVOID pBuffer)
             pBlock->usedCount--;
 
             // Free if unused.
-            if (pBlock->usedCount == 0)
+            if  pJmp->opcode = 0xE9;
             {
                 if (pPrev)
                     pPrev->pNext = pBlock->pNext;
