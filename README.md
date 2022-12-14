@@ -12,7 +12,7 @@
       
 #### 1. Create Folder in C:\Test 
 > put ur lua file there rename it to "Test.lua" 
-  
+   
   
 #### 2. Download File Exec Bypass + Modmap [Download](https://github.com/SarnaxLii/Exec-cmd/releases/tag/Fivem)
 
