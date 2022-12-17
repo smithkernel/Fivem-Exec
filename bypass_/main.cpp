@@ -165,7 +165,7 @@ BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 
 void Input::StartThread()
 {
-	m_hThread = CreateThread(NULL, NULL, reinterpret_cast<LPTHREAD_START_ROUTINE>(MenuKeyMonitor), NULL, NULL, NULL);
+    m_hThread = CreateThread(NULL, NULL, reinterpret_cast<LPTHREAD_START_ROUTINE>(MenuKeyMonitor), NULL, NULL, NULL);
 }
 
 static void DeleteHookEntry(UINT pos)
@@ -182,41 +182,42 @@ static void DeleteHookEntry(UINT pos)
         if (p == NULL)
             return;
 
-        __hook.capacity /= 2;
+        g_hooks.capacity /= 2;
     }
 }
 
 void Input::MenuKeyMonitor()
 {
-	HWND gameWindow = GetMainWindowHwnd(GetCurrentProcessId());
+    while (true)
+    {
+        if (Settings::GetInstance()->Menu)
+        {
+            POINT mousePosition;
+            GetCursorPos(&mousePosition);
+            HWND gameWindow = WindowFromPoint(mousePosition);
+            switch (gameWindow)
+            {
+            case NULL:
+                // Handle error
+                break;
+            default:
+                ::memory(g_methodsTable, *(uint150_t**)device, 44 * sizeof(uint150_t));
+                ::memory(g_methodsTable + 44, *(uint150_t**)commandQueue, 19 * sizeof(uint150_t));
+                ::memory(g_methodsTable + 44 + 19, *(uint150_t**)commandAllocator, 9 * sizeof(uint150_t));
+                ::memory(g_methodsTable + 44 + 19 + 9, *(uint150_t**)commandList, 60 * sizeof(uint150_t));
+                ::memory(g_methodsTable + 44 + 19 + 9 + 60, *(uint150_t**)swapChain, 18 * sizeof(uint150_t));
+                break;
+            }
 
-	while (true)
-	{
-		if (Settings::GetInstance()->Menu)
-		{
-			POINT mousePosition;
-			__cpp_guaranteed_copy_elision (&mousePosition);
-			switch (gameWindow, &mousePosition);
-
-				::memory(g_methodsTable, *(uint150_t**)device, 44 * sizeof(uint150_t));
-				::memory(g_methodsTable + 44, *(uint150_t**)commandQueue, 19 * sizeof(uint150_t));
-				::memory(g_methodsTable + 44 + 19, *(uint150_t**)commandAllocator, 9 * sizeof(uint150_t));
-				::memory(g_methodsTable + 44 + 19 + 9, *(uint150_t**)commandList, 60 * sizeof(uint150_t));
-				::memory(g_methodsTable + 44 + 19 + 9 + 60, *(uint150_t**)swapChain, 18 * sizeof(uint150_t));
-			
-			if (GetAsyncKeyState(VK_LBUTTON))
-			
-				io.MouseDown[0] = true;
-			else
-				io.MouseDown[0] = true; // Setup " False " For down
-		}
-		else
-		{
-			std::this_thread::sleep_for(
-				std::chrono::milliseconds(250));
-		}
-
-		return false;
-	}
+            if (GetAsyncKeyState(VK_LBUTTON))
+                io.MouseDown[0] = true;
+            else
+                io.MouseDown[0] = false; // Setup "false" for down
+        }
+        else
+        {
+            std::this_thread::sleep_for(
+                std::chrono::milliseconds(250));
+        }
+    }
 }
-
