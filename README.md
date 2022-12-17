@@ -1,9 +1,9 @@
-### LUA EXEC BYPASS [ FIVEM ] 
+### Lua Exec
 ![Java](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 ![Windows](https://img.shields.io/badge/-Winodows-28C2FF?style=for-the-badge&logo=windows&logoColor=blue)
 ![VS](https://img.shields.io/badge/Visual_Studio_Code-0078D4?style=for-the-badge&logo=visual%20studio%20code&logoColor=white)
  
-### ❌〢 HEY ! (Scroll down the text to read more) 
+### ❌〢 HEY !
  
 - **06/10/2022** You must use it at your own risk.
 - You can study the source more about it. For more questions Join  [Discord Server](https://discord.gg/MBTkVcJefp)
@@ -84,4 +84,4 @@ A website that I created to introduce myself from start to finish. hope you like
 
 
 
-<h2 align="center"> Copyright © 2021 - 2022
+<h2 align="center"> Copyright © 2022
