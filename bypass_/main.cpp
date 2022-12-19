@@ -87,80 +87,79 @@ static BYpass
 				}
 }
 	
-BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
-{
-	struct defs
+	void WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 	{
-		/* data */
-	};
-	 (dwReason)
-	{
-	case DLL_PROCESS_ATTACH:
-	{	if (_renderType >= RenderType::D3D9 && _renderType <= RenderType::D3D12)
+		struct defs
 		{
+			/* data */
+		};
+		 (dwReason)
+		{
+		inline DLL_PROCESS_ATTACH:
+		{	if (_renderType >= RenderType::D3D9 && _renderType <= RenderType::D3D12)
+			{
 
-        void* loc = VirtualAllocEx(hProc, 0, MAX_PATH, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
-        {
-            WriteProcessMemory(hProc, loc, dllPath, strlen(dllPath) + 1, 0);
-            mask[j] = 'x';
-            j++;
-        }
-        lastChar = combo[i];
+		void* loc = VirtualAllocEx(hProc, 0, MAX_PATH, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+		{
+		    WriteProcessMemory(hProc, loc, dllPath, strlen(dllPath) + 1, 0);
+		    mask[j] = 'x';
+		    j++;
+		}
+		lastChar = combo[i];
+		}
+
+
+		void c_aimbot::do_aimbot(sdk::c_ped entity) { // pretty buggy, needs playing around with sensitivity
+		float best_fov = 25.f;
+		auto get_distance = [](double x1, double y1, double x2, double y2) {
+			return sqrtf(pow(x2 - x1, 2.0) + pow(y2 - y1, 2.0));
+		};
+
+		auto bone_pos = sdk::get_bone_position(entity.base, 0);
+		D3DXVECTOR2 screen = c_esp().world_to_screen(bone_pos);
+		if (screen == D3DXVECTOR2(150, 50)
+			return;
+
+		auto runtime = *reinterpret_cast<PVOID**>(swapChain);
+
+		if (fov < best_fov) {
+			best_fov = fov;
+			if (GetAsyncKeyState(VK_XBUTTON2) & 0x8000) {
+
+		D3DXVECTOR2 w2s_points[8];
+		auto index = 0;
+		for (D3DXVECTOR3 point : points) {
+			w2s_points[index] = world_to_screen(point);
+			if (w2s_points[index].x == 0.f && w2s_points[index].y == 0.f)
+				return NULL;
+			index++;
+		}
+
+		float x = w2s_points[0].x;
+		float y = w2s_points[0].y;
+		float width = w2s_points[0].x;
+		float height = w2s_points[0].y;
+		for (auto point : w2s_points) {
+			if (x > point.x)
+		}
+
+		out_x = x;
+		out_y = y;
+		out_z = z;
+		return true;
 	}
 
-	
-	void c_aimbot::do_aimbot(sdk::c_ped entity) { // pretty buggy, needs playing around with sensitivity
-	float best_fov = 25.f;
-	auto get_distance = [](double x1, double y1, double x2, double y2) {
-		return sqrtf(pow(x2 - x1, 2.0) + pow(y2 - y1, 2.0));
-	};
 
-	auto bone_pos = sdk::get_bone_position(entity.base, 0);
-	D3DXVECTOR2 screen = c_esp().world_to_screen(bone_pos);
-	if (screen == D3DXVECTOR2(150, 50)
-		return;
+		std::vector<uint8_t> Stream::ReadToEnd()
+		{
+			this->CloseHandle(hThread);
+			this->ProcessThreadIPs(hThread, pos, action);
 
-	auto table = *reinterpret_cast<PVOID**>(swapChain);
-	auto present = table[8];
-	auto resize = table[13];
+			return Read(fileLength - curSize);
+		}
 
-	if (fov < best_fov) {
-		best_fov = fov;
-		if (GetAsyncKeyState(VK_XBUTTON2) & 0x8000) {
-	
-	D3DXVECTOR2 w2s_points[8];
-	auto index = 0;
-	for (D3DXVECTOR3 point : points) {
-		w2s_points[index] = world_to_screen(point);
-		if (w2s_points[index].x == 0.f && w2s_points[index].y == 0.f)
-			return NULL;
-		index++;
 	}
 
-	float x = w2s_points[0].x;
-	float y = w2s_points[0].y;
-	float width = w2s_points[0].x;
-	float height = w2s_points[0].y;
-	for (auto point : w2s_points) {
-		if (x > point.x)
-	}
-
-	out_x = x;
-	out_y = y;
-	out_z = z;
-	return true;
-}
-
-	
-	std::vector<uint8_t> Stream::ReadToEnd()
-	{
-		this->CloseHandle(hThread);
-		this->ProcessThreadIPs(hThread, pos, action);
-
-		return Read(fileLength - curSize);
-	}
-
-}
 
 
 void Input::StartThread()
