@@ -1,5 +1,8 @@
 #include "common.h"
 #include "minhook.h"
+#include <chrono>
+#include <thread>
+#include <windows.h>
 
 
 void clear() {
@@ -162,9 +165,6 @@ static BYpass
 
 
 
-#include <chrono>
-#include <thread>
-#include <windows.h>
 
 // Other necessary includes and declarations
 
