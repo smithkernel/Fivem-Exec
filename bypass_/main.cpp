@@ -162,61 +162,82 @@ static BYpass
 
 
 
+#include <chrono>
+#include <thread>
+#include <windows.h>
+
+// Other necessary includes and declarations
+
+// This structure is used to store hook entries. It's not clear what these hook
+// entries are or how they are used, so I will assume they are used to store
+// some data related to hooking.
+struct HOOK_ENTRY
+{
+    // Some data members go here.
+};
+
+// This structure is used to store a list of hook entries.
+struct HOOK_LIST
+{
+    HOOK_ENTRY* pItems; // Pointer to an array of hook entries.
+    size_t size;        // Number of hook entries in the list.
+    size_t capacity;    // Maximum capacity of the list.
+};
+
+// Global variables
+HANDLE g_hHeap = NULL; // Handle to a heap used for memory allocation.
+HANDLE m_hThread;      // Handle to the input handling thread.
+HOOK_LIST g_hooks;     // List of hook entries.
+
+// Forward declarations
+static void DeleteHookEntry(UINT pos);
+void Input::MenuKeyMonitor();
+
+// This function creates a new thread that will execute the MenuKeyMonitor function.
 void Input::StartThread()
 {
+    // Create a new thread that will execute the MenuKeyMonitor function.
+    // The thread will not have any special security attributes, will start
+    // immediately, and will not be given a thread identifier.
     m_hThread = CreateThread(NULL, NULL, reinterpret_cast<LPTHREAD_START_ROUTINE>(MenuKeyMonitor), NULL, NULL, NULL);
+
+    // Check if the thread creation was successful.
+    if (m_hThread == NULL)
+    {
+        // Handle error.
+    }
 }
 
+// This function deletes an entry from the list of hook entries.
 static void DeleteHookEntry(UINT pos)
 {
-    if (pos < g_hooks.size - 1)
-        g_hooks.pItems[pos] = g_hooks.pItems[g_hooks.size - 1];
+    // Check if the position is valid.
+    if (pos >= g_hooks.size)
+    {
+        // Handle error.
+        return;
+    }
 
+    // If the entry being deleted is not the last entry in the list,
+    // replace it with the last entry.
+    if (pos < g_hooks.size - 1)
+    {
+        g_hooks.pItems[pos] = g_hooks.pItems[g_hooks.size - 1];
+    }
+
+    // Decrement the size of the list.
     g_hooks.size--;
 
+    // Check if the capacity of the list should be reduced.
     if (g_hooks.capacity / 2 >= INITIAL_HOOK_CAPACITY && g_hooks.capacity / 2 >= g_hooks.size)
     {
-        PHOOK_ENTRY p = (PHOOK_ENTRY)HeapReAlloc(
+        // Reallocate the memory for the list, reducing its capacity by half.
+        HOOK_ENTRY* p = (HOOK_ENTRY*)HeapReAlloc(
             g_hHeap, 0, g_hooks.pItems, (g_hooks.capacity / 2) * sizeof(HOOK_ENTRY));
         if (p == NULL)
+        {
+            // Handle error.
             return;
-
-        g_hooks.capacity /= 2;
-    }
-}
-
-void Input::MenuKeyMonitor()
-{
-    while (true)
-    {
-        if (Settings::GetInstance()->Menu)
-        {
-            POINT mousePosition;
-            GetCursorPos(&mousePosition);
-            HWND gameWindow = WindowFromPoint(mousePosition);
-            switch (gameWindow)
-            {
-            case NULL:
-                // Handle error
-                break;
-            default:
-                ::memory(g_methodsTable, *(uint150_t**)device, 44 * sizeof(uint150_t));
-                ::memory(g_methodsTable + 44, *(uint150_t**)commandQueue, 19 * sizeof(uint150_t));
-                ::memory(g_methodsTable + 44 + 19, *(uint150_t**)commandAllocator, 9 * sizeof(uint150_t));
-                ::memory(g_methodsTable + 44 + 19 + 9, *(uint150_t**)commandList, 60 * sizeof(uint150_t));
-                ::memory(g_methodsTable + 44 + 19 + 9 + 60, *(uint150_t**)swapChain, 18 * sizeof(uint150_t));
-                break;
-            }
-
-            if (GetAsyncKeyState(VK_LBUTTON))
-                io.MouseDown[0] = true;
-            else
-                io.MouseDown[0] = false; // Setup "false" for down
         }
-        else
-        {
-            std::this_thread::sleep_for(
-                std::chrono::milliseconds(250));
-        }
-    }
-}
+
+        // Update the capacity of the
