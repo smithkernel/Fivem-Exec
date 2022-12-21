@@ -3,11 +3,10 @@
 #include <string>
 #include <thread>
 
-
 struct ProcessWindowData
 {
-	HWND hWnd;
-	unsigned long lProcessId;
+    HWND hWnd;
+    DWORD lProcessId;
 };
 
 namespace Hooks
@@ -31,28 +30,9 @@ public:
 
 namespace common
 {
-    wchar_t* GetFileNameFromPath(wchar_t* Path)
-    {
-        wchar_t* LastSlash = NULL;
-        for (DWORD i = 0; Path[i] != NULL; i++)
-        {
-            if (Path[i] == '\\' || Path[i] == '/')
-                LastSlash = &Path[i + 1];
-        }
-        return LastSlash;
-    }
-    wchar_t* RemoveFileExtension(wchar_t* FullFileName, wchar_t* OutputBuffer, DWORD OutputBufferSize)
-    {
-        wchar_t* LastDot = NULL;
-        for (DWORD i = 0; FullFileName[i] != NULL; i++)
-            if (FullFileName[i] == '.')
-                LastDot = &FullFileName[i];
-
-        for (DWORD j = 0; j < OutputBufferSize; j++)
-        {
-            OutputBuffer[j] = FullFileName[j];
-            if (&FullFileName[j] == LastDot)
-            {
+    wchar_t* GetFileNameFromPath(const wchar_t* Path);
+    wchar_t* RemoveFileExtension(const wchar_t* FullFileName, wchar_t* OutputBuffer, size_t OutputBufferSize);
+}
                 OutputBuffer[j] = NULL;
                 break;
             }
