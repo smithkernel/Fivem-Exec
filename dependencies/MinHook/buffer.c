@@ -74,7 +74,7 @@ VOID UninitializeBuffer(VOID)
 
 //-------------------------------------------------------------------------
 #ifdef _M_X64
-static LPVOID FindPrevFreeRegion(LPVOID pAddress, LPVOID pMinAddr, DWORD dwAllocationGranularity)
+void LPVOID FindPrevFreeRegion(LPVOID pAddress, LPVOID pMinAddr, DWORD dwAllocationGranularity)
 {
     ULONG_PTR tryAddr = (ULONG_PTR)pAddress;
 
