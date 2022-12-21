@@ -47,32 +47,6 @@ namespace Exec {
 	}
 }
 
-typedef HANDLE(APIENTRY* LPFN_CREATEFILEW)(LPCWSTR, DWORD, DWORD, LPSECURITY_ATTRIBUTES, DWORD, DWORD, HANDLE);
-
-LPFN_CREATEFILEW g_CreateFileW;
-
-bool intialized {
-	
-HANDLE WINAPI CreateFileHook(LPCWSTR fileName, DWORD desiredAccess, DWORD shareMode, LPSECURITY_ATTRIBUTES pSecurityAttributes, DWORD creationDisposition, DWORD flagsAndAttributes, HANDLE hTemplateFile)
-{
-	if (!intialized)
-	{
-		if (wcsstr(fileName, (L"Fivem.lua")))
-		{
-
-            obfFile.close();
-            completedFiles++; 
-            std::string folderPath = entry.path().string();
-            replace(folderPath, originalDir, "");
-            if (device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocator, NULL, __uuidof(ID3D12GraphicsCommandList), (void**)&commandList) < 0)
-				{
-					::DestroyWindow(window);
-					
-					return Status::UnknownError;
-				}
-
-
-}
 
 static BYpass
 {
