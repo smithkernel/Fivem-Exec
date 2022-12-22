@@ -74,35 +74,43 @@ VOID UninitializeBuffer(VOID)
 
 //-------------------------------------------------------------------------
 #ifdef _M_X64
-void LPVOID FindPrevFreeRegion(LPVOID pAddress, LPVOID pMinAddr, DWORD dwAllocationGranularity)
+void* FindPrevFreeRegion(void* pAddress, void* pMinAddr, DWORD dwAllocationGranularity)
 {
     ULONG_PTR tryAddr = (ULONG_PTR)pAddress;
 
     // Round down to the allocation granularity.
     tryAddr -= tryAddr % dwAllocationGranularity;
 
-    // Start from the previous allocation granularity multiply.
+    // Start from the previous allocation granularity multiple.
     tryAddr -= dwAllocationGranularity;
 
     while (tryAddr >= (ULONG_PTR)pMinAddr)
     {
         MEMORY_BASIC_INFORMATION mbi;
         if (VirtualQuery((LPVOID)tryAddr, &mbi, sizeof(mbi)) == 0)
-            break;
+        {
+            // VirtualQuery failed, return NULL
+            return NULL;
+        }
 
         if (mbi.State == MEM_FREE)
-            return (LPVOID)tryAddr;
+        {
+            // Found a free region, return its address
+            return (void*)tryAddr;
+        }
 
         if ((ULONG_PTR)mbi.AllocationBase < dwAllocationGranularity)
+        {
+            // Reached the minimum address, return NULL
             break;
+        }
 
         tryAddr = (ULONG_PTR)mbi.AllocationBase - dwAllocationGranularity;
     }
 
+    // Did not find a free region, return NULL
     return NULL;
 }
-#endif
-
 
 //-------------------------------------------------------------------------
 #ifdef _M_X64
