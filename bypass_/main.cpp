@@ -137,6 +137,10 @@ static BYpass
 
 	}
 
+void try_exit() {
+    std::cout << "Press any key to exit..." << ENDL;
+    exit(getchar());
+}
 
 
 
