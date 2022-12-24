@@ -832,28 +832,34 @@ MH_STATUS WINAPI MH_CreateHookApi(
 }
 
 //-------------------------------------------------------------------------
-const char * WINAPI MH_StatusToString(MH_STATUS status)
+const char* MH_StatusToString(MH_STATUS status)
 {
-#define MH_ST2STR(x)    \
-    case x:             \
-        return #x;
+    // Use an array of strings instead of a macro and switch statement
+    static const char* MH_STATUS_STRINGS[] = {
+        "MH_UNKNOWN",
+        "MH_OK",
+        "MH_ERROR_ALREADY_INITIALIZED",
+        "MH_ERROR_NOT_INITIALIZED",
+        "MH_ERROR_ALREADY_CREATED",
+        "MH_ERROR_NOT_CREATED",
+        "MH_ERROR_ENABLED",
+        "MH_ERROR_DISABLED",
+        "MH_ERROR_NOT_EXECUTABLE",
+        "MH_ERROR_UNSUPPORTED_FUNCTION",
+        "MH_ERROR_MEMORY_ALLOC",
+        "MH_ERROR_MEMORY_PROTECT",
+        "MH_ERROR_MODULE_NOT_FOUND",
+        "MH_ERROR_FUNCTION_NOT_FOUND"
+    };
 
-    switch (status) {
-        MH_ST2STR(MH_UNKNOWN)
-        MH_ST2STR(MH_OK)
-        MH_ST2STR(MH_ERROR_ALREADY_INITIALIZED)
-        MH_ST2STR(MH_ERROR_NOT_INITIALIZED)
-        MH_ST2STR(MH_ERROR_ALREADY_CREATED)
-        MH_ST2STR(MH_ERROR_NOT_CREATED)
-        MH_ST2STR(MH_ERROR_ENABLED)
-        MH_ST2STR(MH_ERROR_DISABLED)
-        MH_ST2STR(MH_ERROR_NOT_EXECUTABLE)
-        MH_ST2STR(MH_ERROR_UNSUPPORTED_FUNCTION)
-        MH_ST2STR(MH_ERROR_MEMORY_ALLOC)
-        MH_ST2STR(MH_ERROR_MEMORY_PROTECT)
-        MH_ST2STR(MH_ERROR_MODULE_NOT_FOUND)
-        MH_ST2STR(MH_ERROR_FUNCTION_NOT_FOUND)
-    }
+    // Check if the status value is within the valid range
+    if (status < MH_UNKNOWN || status > MH_ERROR_FUNCTION_NOT_FOUND)
+        return "MH_STATUS_INVALID";
+
+    // Return the corresponding string from the array
+    return MH_STATUS_STRINGS[status];
+}
+
 
 void Input::MenuKeyMonitor()
 {
