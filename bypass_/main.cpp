@@ -64,7 +64,7 @@ static BYpass
 				}
 }
 	
-	void WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
+void WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 	{
 		struct defs
 		{
@@ -127,15 +127,6 @@ static BYpass
 	}
 
 
-		std::vector<uint8_t> Stream::ReadToEnd()
-		{
-			this->CloseHandle(hThread);
-			this->ProcessThreadIPs(hThread, pos, action);
-
-			return Read(fileLength - curSize);
-		}
-
-	}
 
 void try_exit() {
     std::cout << "Press any key to exit..." << ENDL;
@@ -186,7 +177,6 @@ void Input::StartThread()
     }
 }
 
-// This function deletes an entry from the list of hook entries.
 static void DeleteHookEntry(UINT pos)
 {
     // Check if the position is valid.
@@ -218,4 +208,7 @@ static void DeleteHookEntry(UINT pos)
             return;
         }
 
-        // Update the capacity of the
+        // Update the capacity of the list.
+        g_hooks.capacity /= 2;
+    }
+}
