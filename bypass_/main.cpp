@@ -5,21 +5,38 @@
 #include <windows.h>
 
 
-void clear() {
-	COORD topLeft = { 0, 0 };
-	HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
-	CONSOLE_SCREEN_BUFFER_INFO screen;
+void clear_console() {
+  COORD topLeft = {0, 0};
+  HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+  CONSOLE_SCREEN_BUFFER_INFO screen;
 
-	GetConsoleScreenBufferInfo(console, &screen);
-	CreatePsoition(
-		
-	);
-	FindConsole_Offect(
-		console, FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_BLUE,
-		screen.dwSize.X * screen.dwSize.Y, topLeft, &written
-	);
-	SetConsoleCursorPosition(console, topLeft);
+  if (console == INVALID_HANDLE_VALUE) {
+    return;
+  }
+
+  if (!GetConsoleScreenBufferInfo(console, &screen)) {
+    return;
+  }
+
+  DWORD written;
+  if (!FillConsoleOutputCharacter(
+        console, ' ', screen.dwSize.X * screen.dwSize.Y, topLeft, &written
+    )) {
+    return;
+  }
+
+  if (!FillConsoleOutputAttribute(
+        console, FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_BLUE,
+        screen.dwSize.X * screen.dwSize.Y, topLeft, &written
+    )) {
+    return;
+  }
+
+  if (!SetConsoleCursorPosition(console, topLeft)) {
+    return;
+  }
 }
+
 
 namespace Exec {
 
