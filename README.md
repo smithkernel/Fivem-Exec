@@ -8,7 +8,7 @@
 - Use it at your own risk
 - Change modmap to Process Hacker
 - Help  [Discord Server](https://discord.gg/MBTkVcJefp)
-    
+     
 ### Feature 
 
 - Exec LUA
