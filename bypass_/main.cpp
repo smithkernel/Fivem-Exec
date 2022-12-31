@@ -143,13 +143,14 @@ void WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 		return true;
 	}
 
-
-
 void try_exit() {
-    std::cout << "Press any key to exit..." << ENDL;
-    exit(getchar());
+    std::cout << "Press 'q' to exit or any other key to continue..." << std::endl;
+    char c = std::cin.get();
+    if (c == 'q') {
+        std::cout << "Exiting program..." << std::endl;
+        exit(0);
+    }
 }
-
 
 
 // Other necessary includes and declarations
