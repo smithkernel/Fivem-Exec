@@ -156,25 +156,40 @@ typedef struct _MEMORY_BLOCK
 static PMEMORY_BLOCK GetMemoryBlock(LPVOID pOrigin)
 {
     PMEMORY_BLOCK pBlock;
+
 #ifdef _M_X64
     ULONG_PTR minAddr;
     ULONG_PTR maxAddr;
 
+    // Get system information
     SYSTEM_INFO si;
     GetSystemInfo(&si);
-    minAddr = (ULONG_PTR)si.lpMinimumApplicationAddress;
-    maxAddr = (ULONG_PTR)si.lpMaximumApplicationAddress;
 
-    // pOrigin ± 512MB
+    // Set minAddr to the lower bound of the range of memory addresses
+    // that will be searched for the memory block.
+    minAddr = (ULONG_PTR)si.lpMinimumApplicationAddress;
+
+    // If pOrigin is greater than MAX_MEMORY_RANGE, set minAddr to 
+    // pOrigin - MAX_MEMORY_RANGE.
     if ((ULONG_PTR)pOrigin > MAX_MEMORY_RANGE && minAddr < (ULONG_PTR)pOrigin - MAX_MEMORY_RANGE)
         minAddr = (ULONG_PTR)pOrigin - MAX_MEMORY_RANGE;
 
+    // Set maxAddr to the upper bound of the range of memory addresses
+    // that will be searched for the memory block.
+    maxAddr = (ULONG_PTR)si.lpMaximumApplicationAddress;
+
+    // If maxAddr is greater than pOrigin + MAX_MEMORY_RANGE, set it to
+    // pOrigin + MAX_MEMORY_RANGE.
     if (maxAddr > (ULONG_PTR)pOrigin + MAX_MEMORY_RANGE)
         maxAddr = (ULONG_PTR)pOrigin + MAX_MEMORY_RANGE;
 
-    // Make room for MEMORY_BLOCK_SIZE bytes.
+    // Make room for MEMORY_BLOCK_SIZE bytes by adjusting maxAddr.
     maxAddr -= MEMORY_BLOCK_SIZE - 1;
 #endif
+    // TODO: Add code to search for the memory block within the range 
+    // specified by minAddr and maxAddr.
+}
+
 
     // Look the registered blocks for a reachable one.
     for (pBlock = g_pMemoryBlocks; pBlock != NULL; pBlock = pBlock->pNext)
