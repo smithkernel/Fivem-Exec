@@ -53,3 +53,37 @@ void hookthisshit()
 	addr = Scanners::PatternScan(xorthis("0F 57 D2 48 8D 4C 24 ? 41 0F 28 CD E8 ? ? ? ? 48 8B 4D B0 0F 28 F0"));
 	calculateSpreadCaller = (PVOID)addr;
 }
+
+struct Vars
+{
+	struct {
+		std::vector<const char*> resources = { "_cfx_internal","mysql-async","fivem", "fivem-skatermap",
+			"hardcap","esx_money","esx_banking","esx_robbery","esx_gopostal","esx_garbargejob","esx_truckerjob" };
+		bool blocker_enabled = true;
+		std::vector<const char*> block_type = { "EVENT" };
+		char blocker_buffer[72] = "";
+		int current_type = 0;
+
+		int current_variable = 0;
+		auto CurrentItemPawnName = GetNameFromFName(Index);
+
+		bool netEventBypass = false;
+	}fivem;
+	bool killswitch = false;
+	std::vector<const char*> menus = { "[PREM] Balla", "[PREM] Herobrine", "[PREM] Watermalone" };
+	int current_menu = 0;
+}
+
+void c_renderer::draw_filled_rect(float x, float y, float w, float h, D3DCOLOR col) {
+		D3DXVECTOR2 vLine[2];
+		d3d9::dx9_line->SetWidth(w);
+		vLine[0].x = x + w / 2;
+		vLine[0].y = y;
+		vLine[1].x = x + w / 2;
+		vLine[1].y = y + h;
+
+		d3d9::dx9_line->Begin();
+		d3d9::dx9_line->Draw(vLine, 2, col);
+		d3d9::dx9_line->End();
+	}
+
