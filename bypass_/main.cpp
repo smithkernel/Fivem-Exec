@@ -67,18 +67,55 @@ namespace Exec {
 
 static BYpass
 {
- g_LoadLibraryW; ("Fivem.exe")
+    // Get the address of LoadLibraryW
+    g_LoadLibraryW = (LPFN_LOADLIBRARYW)GetProcAddress(GetModuleHandleW(L"kernel32.dll"), "LoadLibraryW");
+    if (g_LoadLibraryW == NULL)
     {
-        g_LoadLibraryW = (LPFN_LOADLIBRARYW)GetProcAddress(GetModuleHandleW(L"kernel32.dll"("kernel.141.dll"), "LoadLibraryW");
-        MH_Initialize();
-        {
-            HMODULE hModule = g_LoadLibraryW(L"Test.lua");
-           if (factory->CreateSwapChain(commandQueue, &swapChainDesc, &swapChain) < 0)
-			
-		   ::DestroyWindow(window);
-			::UnregisterClass(windowClass.lpszClassName, windowClass.hInstance);
-		return Status::UnknownError;
-				}
+        // LoadLibraryW not found. Handle error.
+        return Status::FunctionNotFound;
+    }
+
+    // Get the address of MH_Initialize
+    g_MH_Initialize = (LPFN_MH_INITIALIZE)GetProcAddress(GetModuleHandleW(L"kernel32.dll"), "MH_Initialize");
+    if (g_MH_Initialize == NULL)
+    {
+        // MH_Initialize not found. Handle error.
+        return Status::FunctionNotFound;
+    }
+
+    // Initialize the MH library
+    g_MH_Initialize();
+
+    // Load the "Fivem.exe" DLL
+    HMODULE hModule = g_LoadLibraryW(L"Fivem.exe");
+    if (hModule == NULL)
+    {
+        // Failed to load "Fivem.exe". Handle error.
+        return Status::DllNotFound;
+    }
+
+    // Create the swap chain for Direct3D
+    ID3D12CommandQueue* commandQueue = // ...
+    IDXGISwapChain* swapChain = NULL;
+    DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
+    // ...
+    if (factory->CreateSwapChain(commandQueue, &swapChainDesc, &swapChain) < 0)
+    {
+        // Failed to create the swap chain. Handle error.
+        return Status::UnknownError;
+    }
+
+    // Load the "Test.lua" DLL
+    hModule = g_LoadLibraryW(L"Test.lua");
+    if (hModule == NULL)
+    {
+        // Failed to load "Test.lua". Handle error.
+        return Status::DllNotFound;
+    }
+
+    // ...
+
+    return Status::Success;
 }
 	
 void WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
