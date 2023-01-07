@@ -21,12 +21,23 @@ public:
     ScriptHook();
     ~ScriptHook();
 
-    void Initialize();
+    bool Initialize();
     void Release();
 
-    void HookFunction(PVOID *oFunction, PVOID pDetour);
-    void UnHookFunction(PVOID *oFunction, PVOID pDetour);
+    bool HookFunction(PVOID *oFunction, PVOID pDetour);
+    bool UnHookFunction(PVOID *oFunction, PVOID pDetour);
+
+private:
+    struct HookInfo
+    {
+        PVOID oFunction;
+        PVOID pDetour;
+        PVOID pTrampoline;
+    };
+
+    std::vector<HookInfo> m_hooks;
 };
+
 
 namespace common
 {
