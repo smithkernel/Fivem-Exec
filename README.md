@@ -1,9 +1,9 @@
 <h1 align="center">
-  Exec Bypass 💉
+  Exec 💉
 </h1>
 
 <p align="center">
-  Fivem Exec Bypass 
+  Exec Bypass that you don't need to inject it into the game.
 </p>
 
 
@@ -32,11 +32,10 @@
 - Trigger Event
 
 
-
-## <a id="setup2"></a> 📞 〢 Support
-- If the free version does not work The last option is to pay. Read more below.
-- If you have any questions or don't understand the instructions, join Discord for help.
-- [Discord](https://discord.gg/MBTkVcJefp)
+## <a id="setup2"></a> 🗒 〢 Product
+- If the free version does not work You can pay to buy a personal project.
+- Safe  on main account without getting banned / no need to turn off virus scan Scroll down to the bottom to read more.
+- [Discord](https://discord.gg/MBTkVcJefp) 
 
 ---
 
@@ -84,7 +83,7 @@ modmap.exe FiveM_b2372_GTAProcess.exe d3d11.dll bypass.dll
  
 ## 💬 ・[Discord](https://discord.gg/MBTkVcJefp) 
 
- ### 🛒〢 `PRODUCT`
+ ### 🛒〢 `SHOP`
  
 <table>
 <tr>
@@ -101,7 +100,7 @@ modmap.exe FiveM_b2372_GTAProcess.exe d3d11.dll bypass.dll
 - Undetected
 - Custom Feature if you want `(Example: Aimbot + Esp + Skin Changers)`
 
-### ⚓〢 Warranty
+### 📌〢 Warranty
 
 - Support 24 Hr
 - Update Free
