@@ -185,7 +185,7 @@ void try_exit() {
     char c = std::cin.get();
     if (c == 'q') {
         std::cout << "Exiting program..." << std::endl;
-        exit(0);
+        std::exit(0);
     }
 }
 
