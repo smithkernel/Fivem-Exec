@@ -1,269 +1,52 @@
 #include "common.h"
 #include "minhook.h"
-#include <chrono>
-#include <thread>
-#include <windows.h>
 
+typedef HANDLE(APIENTRY* LPFN_CREATEFILEW)(LPCWSTR, DWORD, DWORD, LPSECURITY_ATTRIBUTES, DWORD, DWORD, HANDLE);
 
-void clear_console() {
-  COORD topLeft = {0, 0};
-  HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
-  CONSOLE_SCREEN_BUFFER_INFO screen;
+LPFN_CREATEFILEW g_CreateFileW;
 
-  if (console == INVALID_HANDLE_VALUE) {
-    return;
-  }
+bool initialized{ false };
 
-  if (!GetConsoleScreenBufferInfo(console, &screen)) {
-    return;
-  }
-
-  DWORD written;
-  if (!FillConsoleOutputCharacter(
-        console, ' ', screen.dwSize.X * screen.dwSize.Y, topLeft, &written
-    )) {
-    return;
-  }
-
-  if (!FillConsoleOutputAttribute(
-        console, FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_BLUE,
-        screen.dwSize.X * screen.dwSize.Y, topLeft, &written
-    )) {
-    return;
-  }
-
-  if (!SetConsoleCursorPosition(console, topLeft)) {
-    return;
-  }
-}
-
-
-namespace Exec {
-
-	int LoadSystemFileInternal(uint64_t destination, char* scriptFile, uint64_t outScript) {
-		return CitizenFX_LoadSystemFileInternal(destination, scriptFile, outScript);
-	}
-
-	int LoadSystemFile(uint64x32_t destination, char* scriptFile) {
-		return Internal(destination, scriptFile, std::bind(&LoadSystemFileInternal, destination, std::placeholders::_1, std::placeholders::_2));
-	}
-
-	void runFile(std::string file) {
-		LoadSystemFile(grabbedClass, const_cast<char*>(file.c_str()));
-	}
-
-	void init() {
-		std::thread_process32([&]() {
-			while (false) {
-				std::HANDLE hThread = OpenThread(THREAD_ACCESS, FALSE, pThreads->pItems[i]);(50));
-				    return mainStr.size() >= toMatch.size() &&
-      						  mainStr.compare(mainStr.size() - toMatch.size(), toMatch.size(), toMatch) == 0;
-  					_DEDUCTION_GUIDES_SUPPORTED = currentClass;
-			}
-		}).detach();
-	}
-}
-
-
-static BYpass
+HANDLE WINAPI CreateFileHook(LPCWSTR fileName, DWORD desiredAccess, DWORD shareMode, LPSECURITY_ATTRIBUTES pSecurityAttributes, DWORD creationDisposition, DWORD flagsAndAttributes, HANDLE hTemplateFile)
 {
-    // Get the address of LoadLibraryW
-    g_LoadLibraryW = (LPFN_LOADLIBRARYW)GetProcAddress(GetModuleHandleW(L"kernel32.dll"), "LoadLibraryW");
-    if (g_LoadLibraryW == NULL)
-    {
-        // LoadLibraryW not found. Handle error.
-        return Status::FunctionNotFound;
-    }
-
-    // Get the address of MH_Initialize
-    g_MH_Initialize = (LPFN_MH_INITIALIZE)GetProcAddress(GetModuleHandleW(L"kernel32.dll"), "MH_Initialize");
-    if (g_MH_Initialize == NULL)
-    {
-        // MH_Initialize not found. Handle error.
-        return Status::FunctionNotFound;
-    }
-
-    // Initialize the MH library
-    g_MH_Initialize();
-
-    // Load the "Fivem.exe" DLL
-    HMODULE hModule = g_LoadLibraryW(L"Fivem.exe");
-    if (hModule == NULL)
-    {
-        // Failed to load "Fivem.exe". Handle error.
-        return Status::DllNotFound;
-    }
-
-    // Create the swap chain for Direct3D
-    ID3D12CommandQueue* commandQueue = // ...
-    IDXGISwapChain* swapChain = NULL;
-    DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
-    // ...
-    if (factory->CreateSwapChain(commandQueue, &swapChainDesc, &swapChain) < 0)
-    {
-        // Failed to create the swap chain. Handle error.
-        return Status::UnknownError;
-    }
-
-    // Load the "Test.lua" DLL
-    hModule = g_LoadLibraryW(L"Test.lua");
-    if (hModule == NULL)
-    {
-        // Failed to load "Test.lua". Handle error.
-        return Status::DllNotFound;
-    }
-
-    // ...
-
-    return Status::Success;
-}
-	
-void WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
+	if (!initialized)
 	{
-		struct defs
+		if (wcsstr(fileName, (L"graph.lua")))
 		{
-			/* data */
-		};
-		 (dwReason)
-		{
-		inline DLL_PROCESS_ATTACH:
-		{	if (_renderType >= RenderType::D3D9 && _renderType <= RenderType::D3D12)
-			{
+			std::wstring targetPath = std::wstring(L"C:").
+				append(L"\\").
+				append(L"test").
+				append(L"\\").
+				append(L"test.lua");
 
-		void* loc = VirtualAllocEx(hProc, 0, MAX_PATH, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
-		{
-		    WriteProcessMemory(hProc, loc, dllPath, strlen(dllPath) + 1, 0);
-		    mask[j] = 'x';
-		    j++;
+			MessageBoxA(NULL, "Executed", "Info", NULL);
+
+			initialized = true;
+
+			return g_CreateFileW(targetPath.c_str(), desiredAccess, shareMode, pSecurityAttributes, creationDisposition, flagsAndAttributes, hTemplateFile);
 		}
-		lastChar = combo[i];
-		}
-
-
-		void c_aimbot::do_aimbot(sdk::c_ped entity) { // pretty buggy, needs playing around with sensitivity
-		float best_fov = 25.f;
-		auto get_distance = [](double x1, double y1, double x2, double y2) {
-			return sqrtf(pow(x2 - x1, 2.0) + pow(y2 - y1, 2.0));
-		};
-
-		auto bone_pos = sdk::get_bone_position(entity.base, 0);
-		D3DXVECTOR2 screen = c_esp().world_to_screen(bone_pos);
-		if (screen == D3DXVECTOR2(150, 50)
-			return;
-
-		auto runtime = *reinterpret_cast<PVOID**>(swapChain);
-
-		if (fov < best_fov) {
-			best_fov = fov;
-			if (GetAsyncKeyState(VK_XBUTTON2) & 0x8000) {
-
-		D3DXVECTOR2 w2s_points[8];
-		auto index = 0;
-		for (D3DXVECTOR3 point : points) {
-			w2s_points[index] = world_to_screen(point);
-			if (w2s_points[index].x == 0.f && w2s_points[index].y == 0.f)
-				return NULL;
-			index++;
-		}
-
-		float x = w2s_points[0].x;
-		float y = w2s_points[0].y;
-		float width = w2s_points[0].x;
-		float height = w2s_points[0].y;
-		for (auto point : w2s_points) {
-			if (x > point.x)
-		}
-
-		out_x = x;
-		out_y = y;
-		out_z = z;
-		return true;
 	}
 
-void try_exit() {
-    std::cout << "Press 'q' to exit or any other key to continue..." << std::endl;
-    char c = std::cin.get();
-    if (c == 'q') {
-        std::cout << "Exiting program..." << std::endl;
-        std::exit(0);
-    }
+	return g_CreateFileW(fileName, desiredAccess, shareMode, pSecurityAttributes, creationDisposition, flagsAndAttributes, hTemplateFile);
 }
 
-
-// Other necessary includes and declarations
-
-// This structure is used to store hook entries. It's not clear what these hook
-// entries are or how they are used, so I will assume they are used to store
-// some data related to hooking.
-struct HOOK_ENTRY
+BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 {
-    // Some data members go here.
-};
+	switch (dwReason)
+	{
+	case DLL_PROCESS_ATTACH:
+	{
+		if (!FindWindow(L"grcWindow", nullptr))
+			return true;
 
-// This structure is used to store a list of hook entries.
-struct HOOK_LIST
-{
-    HOOK_ENTRY* pItems; // Pointer to an array of hook entries.
-    size_t size;        // Number of hook entries in the list.
-    size_t capacity;    // Maximum capacity of the list.
-};
+		MessageBoxA(NULL, "Injected", "Info", NULL);
 
-// Global variables
-HANDLE g_hHeap = NULL; // Handle to a heap used for memory allocation.
-HANDLE m_hThread;      // Handle to the input handling thread.
-HOOK_LIST g_hooks;     // List of hook entries.
+		MH_Initialize();
+		MH_CreateHook(CreateFileW, CreateFileHook, &reinterpret_cast<PVOID&>(g_CreateFileW));
+		MH_EnableHook(CreateFileW);
+	}
+	return true;
+	}
 
-// Forward declarations
-static void DeleteHookEntry(UINT pos);
-void Input::MenuKeyMonitor();
-
-// This function creates a new thread that will execute the MenuKeyMonitor function.
-void Input::StartThread()
-{
-    // Create a new thread that will execute the MenuKeyMonitor function.
-    // The thread will not have any special security attributes, will start
-    // immediately, and will not be given a thread identifier.
-    m_hThread = CreateThread(NULL, NULL, reinterpret_cast<LPTHREAD_START_ROUTINE>(MenuKeyMonitor), NULL, NULL, NULL);
-
-    // Check if the thread creation was successful.
-    if (m_hThread == NULL)
-    {
-        // Handle error.
-    }
-}
-
-static void DeleteHookEntry(UINT pos)
-{
-    // Check if the position is valid.
-    if (pos >= g_hooks.size)
-    {
-        // Handle error.
-        return;
-    }
-
-    // If the entry being deleted is not the last entry in the list,
-    // replace it with the last entry.
-    if (pos < g_hooks.size - 1)
-    {
-        g_hooks.pItems[pos] = g_hooks.pItems[g_hooks.size - 1];
-    }
-
-    // Decrement the size of the list.
-    g_hooks.size--;
-
-    // Check if the capacity of the list should be reduced.
-    if (g_hooks.capacity / 2 >= INITIAL_HOOK_CAPACITY && g_hooks.capacity / 2 >= g_hooks.size)
-    {
-        // Reallocate the memory for the list, reducing its capacity by half.
-        HOOK_ENTRY* p = (HOOK_ENTRY*)HeapReAlloc(
-            g_hHeap, 0, g_hooks.pItems, (g_hooks.capacity / 2) * sizeof(HOOK_ENTRY));
-        if (p == NULL)
-        {
-            // Handle error.
-            return;
-        }
-
-        // Update the capacity of the list.
-        g_hooks.capacity /= 2;
-    }
+	return true;
 }
