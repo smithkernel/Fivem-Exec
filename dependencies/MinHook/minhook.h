@@ -26,6 +26,14 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#pragma once
+
+#if !(defined _M_IX86) && !(defined _M_X64)
+    #error MinHook supports only x86 and x64 systems.
+#endif
+
+#include <windows.h>
+
 // MinHook Error Codes.
 typedef enum MH_STATUS
 {
@@ -125,7 +133,9 @@ extern "C" {
     //   pDetour    [in]  A pointer to the detour function, which will override
     //                    the target function.
     //   ppOriginal [out] A pointer to the trampoline function, which will be
-    //                    used to call the original target function.be used
+    //                    used to call the original target function.
+    //                    This parameter can be NULL.
+    //   ppTarget   [out] A pointer to the target function, which will be used
     //                    with other functions.
     //                    This parameter can be NULL.
     MH_STATUS WINAPI MH_CreateHookApiEx(
@@ -164,61 +174,13 @@ extern "C" {
     //                queued to be disabled.
     MH_STATUS WINAPI MH_QueueDisableHook(LPVOID pTarget);
 
+    // Applies all queued changes in one go.
     MH_STATUS WINAPI MH_ApplyQueued(VOID);
 
     // Translates the MH_STATUS to its name as a string.
     const char * WINAPI MH_StatusToString(MH_STATUS status);
-class Settings
-{
-public:
-	bool bESPEnabled;
 
-	bool bESPBox;
-	bool bESPHealth; 
-	bool bESPHealthText;
-	bool bESPName;
-	bool bESPDistance; 
-	bool bESPHead;
-	bool bESPEnemyOnly;
-	bool bESPSnapline;
-	bool bESPHasArmor;
+#ifdef __cplusplus
+}
+#endif
 
-	bool bAccuracyNoSpread;
-	float fSpread;
-	bool bAccuracyNoRecoil;
-	float fRecoil;
-
-	bool bAccuracyAimbot;
-	bool bAccuracyAimShowFOV;
-	float fAimFov;
-
-	bool bAccuracyTrigger;
-
-	bool Menu;
-
-	static Settings* GetInstance();
-
-private:
-	Settings();
-	~Settings();
-
-	static Settings* m_pInstance;
-};
-	
-	namespace Executor
-{
-	void Render()
-	{
-		auto size = ImGui::GetWindowSize();
-		editor.SetReadOnly(false);
-		editor.SetShowWhitespaces(false);
-		editor.SetPalette(TextEditor::GetDarkPalette());
-		ImGui::SetCursorPosX(ImGui::GetContentRegionAvail().x / 1.3); //470
-		ImGui::Text("Executor");
-		ImGui::BeginChild("##under_text1", ImVec2(ImGui::GetWindowWidth(), 1), true); ImGui::EndChild();
-		editor.Render("##Null", ImVec2(size.x - 16, size.y - 110), true);ImGui::Spacing();
-		if (ImGui::Button(ICON_FA_CODE" Execute", ImVec2(116, 30)))
-		{
-			if (resources[selectedResource] == "_cfx_internal")
-			{
-				return;
