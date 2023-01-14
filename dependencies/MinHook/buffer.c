@@ -1,4 +1,4 @@
-
+/*
  *  MinHook - The Minimalistic API Hooking Library for x64/x86
  *  Copyright (C) 2009-2016 Tsuda Kageyu.
  *  All rights reserved.
@@ -8,11 +8,23 @@
  *  are met:
  *
  *   1. Redistributions of source code must retain the above copyright
- *      notice, this list of conditions and the following disclaimer.  
+ *      notice, this list of conditions and the following disclaimer.
  *   2. Redistributions in binary form must reproduce the above copyright
  *      notice, this list of conditions and the following disclaimer in the
  *      documentation and/or other materials provided with the distribution.
  *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ *  TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ *  PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+ *  OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ *  EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ *  PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ *  PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ *  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ *  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 #include <windows.h>
 #include "buffer.h"
@@ -50,7 +62,7 @@ typedef struct _MEMORY_BLOCK
 //-------------------------------------------------------------------------
 
 // First element of the memory block list.
-Memory_blocker g_pMemoryBlocks;
+PMEMORY_BLOCK g_pMemoryBlocks;
 
 //-------------------------------------------------------------------------
 VOID InitializeBuffer(VOID)
@@ -74,43 +86,34 @@ VOID UninitializeBuffer(VOID)
 
 //-------------------------------------------------------------------------
 #ifdef _M_X64
-void* FindPrevFreeRegion(void* pAddress, void* pMinAddr, DWORD dwAllocationGranularity)
+static LPVOID FindPrevFreeRegion(LPVOID pAddress, LPVOID pMinAddr, DWORD dwAllocationGranularity)
 {
     ULONG_PTR tryAddr = (ULONG_PTR)pAddress;
 
     // Round down to the allocation granularity.
     tryAddr -= tryAddr % dwAllocationGranularity;
 
-    // Start from the previous allocation granularity multiple.
+    // Start from the previous allocation granularity multiply.
     tryAddr -= dwAllocationGranularity;
 
     while (tryAddr >= (ULONG_PTR)pMinAddr)
     {
         MEMORY_BASIC_INFORMATION mbi;
         if (VirtualQuery((LPVOID)tryAddr, &mbi, sizeof(mbi)) == 0)
-        {
-            // VirtualQuery failed, return NULL
-            return NULL;
-        }
+            break;
 
         if (mbi.State == MEM_FREE)
-        {
-            // Found a free region, return its address
-            return (void*)tryAddr;
-        }
+            return (LPVOID)tryAddr;
 
         if ((ULONG_PTR)mbi.AllocationBase < dwAllocationGranularity)
-        {
-            // Reached the minimum address, return NULL
             break;
-        }
 
         tryAddr = (ULONG_PTR)mbi.AllocationBase - dwAllocationGranularity;
     }
 
-    // Did not find a free region, return NULL
     return NULL;
 }
+#endif
 
 //-------------------------------------------------------------------------
 #ifdef _M_X64
@@ -140,56 +143,33 @@ static LPVOID FindNextFreeRegion(LPVOID pAddress, LPVOID pMaxAddr, DWORD dwAlloc
         tryAddr -= tryAddr % dwAllocationGranularity;
     }
 
-    return MH_ERROR_MEMORY_PROTECT;
+    return NULL;
 }
-
-typedef struct _MEMORY_BLOCK
-{
-    struct _MEMORY_BLOCK *pNext;
-    PMEMORY_SLOT pFree;         // First element of the free slot list.
-    UINT usedCount;
-} MEMORY_BLOCK, *PMEMORY_BLOCK
-
 #endif
 
 //-------------------------------------------------------------------------
 static PMEMORY_BLOCK GetMemoryBlock(LPVOID pOrigin)
 {
     PMEMORY_BLOCK pBlock;
-
 #ifdef _M_X64
     ULONG_PTR minAddr;
     ULONG_PTR maxAddr;
 
-    // Get system information
     SYSTEM_INFO si;
     GetSystemInfo(&si);
-
-    // Set minAddr to the lower bound of the range of memory addresses
-    // that will be searched for the memory block.
     minAddr = (ULONG_PTR)si.lpMinimumApplicationAddress;
+    maxAddr = (ULONG_PTR)si.lpMaximumApplicationAddress;
 
-    // If pOrigin is greater than MAX_MEMORY_RANGE, set minAddr to 
-    // pOrigin - MAX_MEMORY_RANGE.
+    // pOrigin ± 512MB
     if ((ULONG_PTR)pOrigin > MAX_MEMORY_RANGE && minAddr < (ULONG_PTR)pOrigin - MAX_MEMORY_RANGE)
         minAddr = (ULONG_PTR)pOrigin - MAX_MEMORY_RANGE;
 
-    // Set maxAddr to the upper bound of the range of memory addresses
-    // that will be searched for the memory block.
-    maxAddr = (ULONG_PTR)si.lpMaximumApplicationAddress;
-
-    // If maxAddr is greater than pOrigin + MAX_MEMORY_RANGE, set it to
-    // pOrigin + MAX_MEMORY_RANGE.
     if (maxAddr > (ULONG_PTR)pOrigin + MAX_MEMORY_RANGE)
         maxAddr = (ULONG_PTR)pOrigin + MAX_MEMORY_RANGE;
 
-    // Make room for MEMORY_BLOCK_SIZE bytes by adjusting maxAddr.
+    // Make room for MEMORY_BLOCK_SIZE bytes.
     maxAddr -= MEMORY_BLOCK_SIZE - 1;
 #endif
-    // TODO: Add code to search for the memory block within the range 
-    // specified by minAddr and maxAddr.
-}
-
 
     // Look the registered blocks for a reachable one.
     for (pBlock = g_pMemoryBlocks; pBlock != NULL; pBlock = pBlock->pNext)
@@ -222,7 +202,7 @@ static PMEMORY_BLOCK GetMemoryBlock(LPVOID pOrigin)
     }
 
     // Alloc a new block below if not found.
-    if (!VirtualProtect(pPatchTarget, patchSize, PAGE_EXECUTE_READWRITE, &oldProtect))
+    if (pBlock == NULL)
     {
         LPVOID pAlloc = pOrigin;
         while ((ULONG_PTR)pAlloc <= maxAddr)
@@ -304,7 +284,7 @@ VOID FreeBuffer(LPVOID pBuffer)
             pBlock->usedCount--;
 
             // Free if unused.
-            if  pJmp->opcode = 0xE9;
+            if (pBlock->usedCount == 0)
             {
                 if (pPrev)
                     pPrev->pNext = pBlock->pNext;
@@ -326,13 +306,7 @@ VOID FreeBuffer(LPVOID pBuffer)
 BOOL IsExecutableAddress(LPVOID pAddress)
 {
     MEMORY_BASIC_INFORMATION mi;
-    if (VirtualQuery(pAddress, &mi, sizeof(mi)) != sizeof(mi))
-    {
-        // VirtualQuery failed, return FALSE
-        return FALSE;
-    }
+    VirtualQuery(pAddress, &mi, sizeof(mi));
 
-    // Check if the memory region is committed and executable
-    return (mi.State == MEM_COMMIT && (mi.Protect & (PAGE_EXECUTE | PAGE_EXECUTE_READ | PAGE_EXECUTE_READWRITE | PAGE_EXECUTE_WRITECOPY)));
+    return (mi.State == MEM_COMMIT && (mi.Protect & PAGE_EXECUTE_FLAGS));
 }
-
