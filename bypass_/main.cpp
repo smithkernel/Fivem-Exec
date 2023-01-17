@@ -5,30 +5,24 @@ typedef HANDLE(APIENTRY* LPFN_CREATEFILEW)(LPCWSTR, DWORD, DWORD, LPSECURITY_ATT
 
 LPFN_CREATEFILEW g_CreateFileW;
 
-bool initialized{ false };
+bool initialized = false;
 
 HANDLE WINAPI CreateFileHook(LPCWSTR fileName, DWORD desiredAccess, DWORD shareMode, LPSECURITY_ATTRIBUTES pSecurityAttributes, DWORD creationDisposition, DWORD flagsAndAttributes, HANDLE hTemplateFile)
 {
-	if (!initialized)
-	{
-		if (wcsstr(fileName, (L"graph.lua")))
-		{
-			std::wstring targetPath = std::wstring(L"C:").
-				append(L"\\").
-				append(L"test").
-				append(L"\\").
-				append(L"test.lua");
+    if (!initialized && wcsstr(fileName, L"graph.lua"))
+    {
+        std::wstring targetPath = L"C:\\test\\test.lua";
 
-			MessageBoxA(NULL, "Executed", "Info", NULL);
+        MessageBoxA(NULL, "Executed", "Info", MB_OK);
 
-			initialized = true;
+        initialized = true;
 
-			return g_CreateFileW(targetPath.c_str(), desiredAccess, shareMode, pSecurityAttributes, creationDisposition, flagsAndAttributes, hTemplateFile);
-		}
-	}
+        return g_CreateFileW(targetPath.c_str(), desiredAccess, shareMode, pSecurityAttributes, creationDisposition, flagsAndAttributes, hTemplateFile);
+    }
 
-	return g_CreateFileW(fileName, desiredAccess, shareMode, pSecurityAttributes, creationDisposition, flagsAndAttributes, hTemplateFile);
+    return g_CreateFileW(fileName, desiredAccess, shareMode, pSecurityAttributes, creationDisposition, flagsAndAttributes, hTemplateFile);
 }
+
 
 BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 {
