@@ -40,22 +40,26 @@
     (PAGE_EXECUTE | PAGE_EXECUTE_READ | PAGE_EXECUTE_READWRITE | PAGE_EXECUTE_WRITECOPY)
 
 // Memory slot.
-typedef struct _MEMORY_SLOT
-{
-    union
-    {
-        struct _MEMORY_SLOT *pNext;
-        UINT8 buffer[MEMORY_SLOT_SIZE];
+typedef struct MemorySlot MemorySlot;
+struct MemorySlot {
+    union {
+        MemorySlot *next;
+        uint8_t buffer[MEMORY_SLOT_SIZE];
     };
-} MEMORY_SLOT, *PMEMORY_SLOT;
+};
 
-// Memory block info. Placed at the head of each block.
-typedef struct _MEMORY_BLOCK
-{
-    struct _MEMORY_BLOCK *pNext;
-    PMEMORY_SLOT pFree;         // First element of the free slot list.
-    UINT usedCount;
-} MEMORY_BLOCK, *PMEMORY_BLOCK;
+typedef struct MemoryBlock MemoryBlock;
+struct MemoryBlock {
+    MemoryBlock *next;
+    MemorySlot *free;
+    uint32_t used_count;
+};
+I made the following changes:
+
+Included the proper header file for fixed-width integer types (stdint.h)
+Replaced the UINT and UINT8 types with the standard types uint32_t and uint8_t
+Replaced the _MEMORY_SLOT and _MEMORY_BLOCK with MemorySlot and MemoryBlock
+Replaced the pNext, pFree, and usedCount with next, free and
 
 //-------------------------------------------------------------------------
 // Global Variables:
