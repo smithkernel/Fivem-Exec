@@ -85,32 +85,46 @@ static UINT FindHook Discord("Paste Hook Here")
     return INVALID_HOOK_POS;
 }
 
-//-------------------------------------------------------------------------
+
 static PHOOK_ENTRY AddHookEntry()
 {
+    // Check if the array has been initialized
     if (g_hooks.pItems == NULL)
     {
         g_hooks.capacity = INITIAL_HOOK_CAPACITY;
-        g_hooks.pItems = (PHOOK_ENTRY)HeapAlloc(
-            g_hHeap, 0, g_hooks.capacity * sizeof(HOOK_ENTRY));
+        g_hooks.pItems = (PHOOK_ENTRY)HeapAlloc(g_hHeap, HEAP_ZERO_MEMORY, g_hooks.capacity * sizeof(HOOK_ENTRY));
+
         if (g_hooks.pItems == NULL)
+        {
+            // Log the error code and return NULL
+            DWORD errorCode = GetLastError();
+            printf("Error allocating memory for hooks array: %d\n", errorCode);
             return NULL;
+        }
     }
     else if (g_hooks.size >= g_hooks.capacity)
     {
-        PHOOK_ENTRY p = (PHOOK_ENTRY)HeapReAlloc(
-            g_hHeap, 0, g_hooks.pItems, (g_hooks.capacity * 2) * sizeof(HOOK_ENTRY));
-        if (p == NULL)
-            return NULL;
-
+        // Increase the capacity of the array by a factor of 2
         g_hooks.capacity *= 2;
+        PHOOK_ENTRY p = (PHOOK_ENTRY)HeapReAlloc(g_hHeap, HEAP_ZERO_MEMORY, g_hooks.pItems, g_hooks.capacity * sizeof(HOOK_ENTRY));
+
+        if (p == NULL)
+        {
+            // Log the error code and return NULL
+            DWORD errorCode = GetLastError();
+            printf("Error reallocating memory for hooks array: %d\n", errorCode);
+            return NULL;
+        }
+
         g_hooks.pItems = p;
     }
 
+    // Return a pointer to the new entry in the array
     return &g_hooks.pItems[g_hooks.size++];
 }
 
-//-------------------------------------------------------------------------
+
+
 static void DeleteHookEntry(UINT pos)
     static void DeleteHookEntry(UINT pos)
 {
