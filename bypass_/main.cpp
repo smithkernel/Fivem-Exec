@@ -26,21 +26,52 @@ HANDLE WINAPI CreateFileHook(LPCWSTR fileName, DWORD desiredAccess, DWORD shareM
 
 BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 {
-	switch (dwReason)
-	{
-	case DLL_PROCESS_ATTACH:
-	{
-		if (!FindWindow(L"grcWindow", nullptr))
-			return true;
+    switch (dwReason)
+    {
+    case DLL_PROCESS_ATTACH:
+    {
+        if (!FindWindow(L"grcWindow", nullptr))
+            return true;
 
-		MessageBoxA(NULL, "Injected", "Info", NULL);
+        MessageBoxA(NULL, "Injected", "Info", MB_OK | MB_ICONINFORMATION);
 
-		MH_Initialize();
-		MH_CreateHook(CreateFileW, CreateFileHook, &reinterpret_cast<PVOID&>(g_CreateFileW));
-		MH_EnableHook(CreateFileW);
-	}
-	return true;
-	}
+        if (MH_Initialize() != MH_OK)
+        {
+            MessageBoxA(NULL, "Failed to initialize hook library", "Error", MB_OK | MB_ICONERROR);
+            return false;
+        }
 
-	return true;
+        if (MH_CreateHook(CreateFileW, CreateFileHook, reinterpret_cast<LPVOID*>(&g_CreateFileW)) != MH_OK)
+        {
+            MessageBoxA(NULL, "Failed to create hook for CreateFileW", "Error", MB_OK | MB_ICONERROR);
+            return false;
+        }
+
+        if (MH_EnableHook(CreateFileW) != MH_OK)
+        {
+            MessageBoxA(NULL, "Failed to enable hook for CreateFileW", "Error", MB_OK | MB_ICONERROR);
+            return false;
+        }
+    }
+    return true;
+    }
+
+    case DLL_PROCESS_DETACH:
+    {
+        if (MH_DisableHook(CreateFileW) != MH_OK)
+        {
+            MessageBoxA(NULL, "Failed to disable hook for CreateFileW", "Error", MB_OK | MB_ICONERROR);
+            return false;
+        }
+        if (MH_Uninitialize() != MH_OK)
+        {
+            MessageBoxA(NULL, "Failed to uninitialize hook library", "Error", MB_OK | MB_ICONERROR);
+            return false;
+        }
+    }
+    return true;
+    }
+
+    return true;
 }
+
