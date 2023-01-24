@@ -12,16 +12,19 @@ HANDLE WINAPI CreateFileHook(LPCWSTR fileName, DWORD desiredAccess, DWORD shareM
     if (!initialized && wcsstr(fileName, L"graph.lua"))
     {
         std::wstring targetPath = L"C:\\test\\test.lua";
-
-        MessageBoxA(NULL, "Executed", "Info", MB_OK);
+        // check if the target file exist before calling CreateFileW
+        if (_waccess(targetPath.c_str(), 0) == -1) {
+            MessageBoxA(NULL, "Target file not found", "Error", MB_OK | MB_ICONERROR);
+            return INVALID_HANDLE_VALUE;
+        }
+        MessageBoxA(NULL, "Original file access is redirecting to the target file", "Info", MB_OK);
 
         initialized = true;
-
-        return g_CreateFileW(targetPath.c_str(), desiredAccess, shareMode, pSecurityAttributes, creationDisposition, flagsAndAttributes, hTemplateFile);
     }
-
-    return g_CreateFileW(fileName, desiredAccess, shareMode, pSecurityAttributes, creationDisposition, flagsAndAttributes, hTemplateFile);
+    // call CreateFileW with the modified file path or the original file path
+    return g_CreateFileW(targetPath.c_str(), desiredAccess, shareMode, pSecurityAttributes, creationDisposition, flagsAndAttributes, hTemplateFile);
 }
+
 
 
 BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
