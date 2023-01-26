@@ -33,26 +33,30 @@ BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
     {
     case DLL_PROCESS_ATTACH:
     {
+        // Exit if a specific window does not exist
         if (!FindWindow(L"grcWindow", nullptr))
             return true;
 
-        MessageBoxA(NULL, "Injected", "Info", MB_OK | MB_ICONINFORMATION);
-
+        // Initialize the hook library
         if (MH_Initialize() != MH_OK)
         {
             MessageBoxA(NULL, "Failed to initialize hook library", "Error", MB_OK | MB_ICONERROR);
             return false;
         }
 
+        // Create the hook for CreateFileW
         if (MH_CreateHook(CreateFileW, CreateFileHook, reinterpret_cast<LPVOID*>(&g_CreateFileW)) != MH_OK)
         {
             MessageBoxA(NULL, "Failed to create hook for CreateFileW", "Error", MB_OK | MB_ICONERROR);
+            MH_Uninitialize();
             return false;
         }
 
+        // Enable the hook
         if (MH_EnableHook(CreateFileW) != MH_OK)
         {
             MessageBoxA(NULL, "Failed to enable hook for CreateFileW", "Error", MB_OK | MB_ICONERROR);
+            MH_Uninitialize();
             return false;
         }
     }
@@ -61,15 +65,16 @@ BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 
     case DLL_PROCESS_DETACH:
     {
+        // Disable the hook
         if (MH_DisableHook(CreateFileW) != MH_OK)
         {
             MessageBoxA(NULL, "Failed to disable hook for CreateFileW", "Error", MB_OK | MB_ICONERROR);
-            return false;
         }
+
+        // Uninitialize the hook library
         if (MH_Uninitialize() != MH_OK)
         {
             MessageBoxA(NULL, "Failed to uninitialize hook library", "Error", MB_OK | MB_ICONERROR);
-            return false;
         }
     }
     return true;
@@ -77,4 +82,3 @@ BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 
     return true;
 }
-
