@@ -87,19 +87,19 @@ typedef struct _JCC_ABS
 
 #pragma pack(pop)
 
-typedef struct _TRAMPOLINE
-{
-    LPVOID pTarget;         // [In] Address of the target function.
-    LPVOID pDetour;         // [In] Address of the detour function.
-    LPVOID pTrampoline;     // [In] Buffer address for the trampoline and relay function.
+typedef struct Trampoline {
+    void* target;         // [In] Address of the target function to redirect.
+    void* detour;         // [In] Address of the detour function, the function to redirect execution to.
+    void* trampoline;     // [In] Buffer address for the trampoline and relay function.
 
 #ifdef _M_X64
-    LPVOID pRelay;          // [Out] Address of the relay function.
+    void* relay;          // [Out] Address of the relay function, used to redirect execution back to target function after detour execution.
 #endif
-    BOOL   patchAbove;      // [Out] Should use the hot patch area?
-    UINT   nIP;             // [Out] Number of the instruction boundaries.
-    UINT8  oldIPs[8];       // [Out] Instruction boundaries of the target function.
-    UINT8  newIPs[8];       // [Out] Instruction boundaries of the trampoline function.
-} TRAMPOLINE, *PTRAMPOLINE;
+    bool   patchAbove;    // [Out] Indicates whether to use the hot patch area or not.
+    uint32_t nIP;         // [Out] Number of instruction boundaries.
+    uint8_t oldIPs[8];    // [Out] Instruction boundaries of the target function.
+    uint8_t newIPs[8];    // [Out] Instruction boundaries of the trampoline function.
+} Trampoline;
+
 
 BOOL CreateTrampolineFunction(PTRAMPOLINE ct);
