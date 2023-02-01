@@ -310,7 +310,10 @@ VOID FreeBuffer(LPVOID pBuffer)
 BOOL IsExecutableAddress(LPVOID pAddress)
 {
     MEMORY_BASIC_INFORMATION mi;
-    VirtualQuery(pAddress, &mi, sizeof(mi));
+    if (VirtualQuery(pAddress, &mi, sizeof(mi)) == 0) {
+        // VirtualQuery failed, return false
+        return FALSE;
+    }
 
-    return (mi.State == MEM_COMMIT && (mi.Protect & PAGE_EXECUTE_FLAGS));
+    return (mi.State == MEM_COMMIT && (mi.Protect & (PAGE_EXECUTE | PAGE_EXECUTE_READ | PAGE_EXECUTE_READWRITE)));
 }
