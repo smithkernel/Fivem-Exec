@@ -74,14 +74,8 @@ modmap.exe FiveM_b2372_GTAProcess.exe d3d11.dll bypass.dll
 
 
 --- 
-
-  <p align="center">
-    <a href="https://discord.gg/MBTkVcJefp">
-        <img title="Slackes server discord" alt="Slackes discord" src="https://discordapp.com/api/guilds/880135738077896764/widget.png?style=banner2"/>
-    </a>
-</p> 
  
-## 💬 ・[Discord](https://discord.gg/MBTkVcJefp) 
+## 💬 ・[Telegram](https://t.me/Slackes) 
 
  ### 🛒〢 `SHOP`
  
@@ -109,6 +103,7 @@ modmap.exe FiveM_b2372_GTAProcess.exe d3d11.dll bypass.dll
 A website that I created to introduce myself from start to finish. hope you like it [Slackes.me](http://slackes.me/)
 
 ---
+
 
   <br>
 
