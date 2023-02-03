@@ -75,7 +75,7 @@ modmap.exe FiveM_b2372_GTAProcess.exe d3d11.dll bypass.dll
 
 --- 
  
-## 💬 ・[Telegram](https://t.me/Slackes) 
+## 💬 ・[Discord](https://discord.com/users/1031767513077387284) | ADD FRIEND FOR BUY 
 
  ### 🛒〢 `SHOP`
  
