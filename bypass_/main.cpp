@@ -60,22 +60,37 @@ BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
     return true;
     }
 
-    case DLL_PROCESS_DETACH:
+    // Set the hook for CreateFileW
+    if (MH_CreateHook(&CreateFileW, &CreateFileWHook, (LPVOID*)&pCreateFileW) != MH_OK)
     {
-        // Disable the hook
-        if (MH_DisableHook(CreateFileW) != MH_OK)
-        {
-            MessageBoxA(NULL, "Failed to disable hook for CreateFileW", "Error", MB_OK | MB_ICONERROR);
-        }
-
-        // Uninitialize the hook library
-        if (MH_Uninitialize() != MH_OK)
-        {
-            MessageBoxA(NULL, "Failed to uninitialize hook library", "Error", MB_OK | MB_ICONERROR);
-        }
-    }
-    return true;
+        MessageBoxA(NULL, "Failed to set hook for CreateFileW", "Error", MB_OK | MB_ICONERROR);
+        return FALSE;
     }
 
-    return true;
+    // Enable the hook
+    if (MH_EnableHook(&CreateFileW) != MH_OK)
+    {
+        MessageBoxA(NULL, "Failed to enable hook for CreateFileW", "Error", MB_OK | MB_ICONERROR);
+        return FALSE;
+    }
 }
+break;
+
+case DLL_PROCESS_DETACH:
+{
+    // Disable the hook
+    if (MH_DisableHook(&CreateFileW) != MH_OK)
+    {
+        MessageBoxA(NULL, "Failed to disable hook for CreateFileW", "Error", MB_OK | MB_ICONERROR);
+    }
+
+    // Uninitialize the hook library
+    if (MH_Uninitialize() != MH_OK)
+    {
+        MessageBoxA(NULL, "Failed to uninitialize hook library", "Error", MB_OK | MB_ICONERROR);
+    }
+}
+break;
+}
+
+return TRUE;
