@@ -1,5 +1,5 @@
 <h1 align="center">
-  Exec 💉
+  Lua Executor 💉
 </h1>
 
 <p align="center">
@@ -81,9 +81,9 @@ modmap.exe FiveM_b2372_GTAProcess.exe d3d11.dll bypass.dll
     </a>
 </p> 
  
-## 💬 ・[Discord](https://discord.gg/2euDQqzD8Y) 
+## 💬 ・[Discord Server](https://discord.gg/2euDQqzD8Y) 
 
- ### 🛒〢 `SHOP`
+ ### 🛒〢 `PRODUCT`
  
 <table>
 <tr>
@@ -100,7 +100,7 @@ modmap.exe FiveM_b2372_GTAProcess.exe d3d11.dll bypass.dll
 - Undetected
 - Custom Feature if you want `(Example: Aimbot + Esp + Skin Changers)`
 
-### 📌〢 Warranty
+### 🔱〢 Warranty
 
 - Support 24 Hr
 - Update Free
@@ -115,4 +115,8 @@ A website that I created to introduce myself from start to finish. hope you like
 <p align="center">
   Copyright © 2021 - 2022
 <br>
+
+
+
+
 
