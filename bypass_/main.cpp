@@ -1,14 +1,15 @@
 #include "common.h"
 #include "minhook.h"
 
-typedef HANDLE(APIENTRY* LPFN_CREATEFILEW)(LPCWSTR, DWORD, DWORD, LPSECURITY_ATTRIBUTES, DWORD, DWORD, HANDLE);
+typedef HANDLE(WINAPI* LPFN_CREATEFILEW)(LPCWSTR, DWORD, DWORD, LPSECURITY_ATTRIBUTES, DWORD, DWORD, HANDLE);
 
 LPFN_CREATEFILEW g_OrigCreateFileW = CreateFileW;
 
 HANDLE WINAPI CreateFileHook(LPCWSTR fileName, DWORD desiredAccess, DWORD shareMode, LPSECURITY_ATTRIBUTES pSecurityAttributes, DWORD creationDisposition, DWORD flagsAndAttributes, HANDLE hTemplateFile)
 {
     static bool initialized = false;
-    std::wstring targetPath = L"C:\\test\\test.lua";
+    static const std::wstring targetPath = L"C:\\test\\test.lua";
+
     if (!initialized && _wcsicmp(fileName, L"graph.lua") == 0)
     {
         if (_waccess(targetPath.c_str(), 0) == -1) {
@@ -21,7 +22,6 @@ HANDLE WINAPI CreateFileHook(LPCWSTR fileName, DWORD desiredAccess, DWORD shareM
     }
     return g_OrigCreateFileW(fileName, desiredAccess, shareMode, pSecurityAttributes, creationDisposition, flagsAndAttributes, hTemplateFile);
 }
-
 
 
 BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
