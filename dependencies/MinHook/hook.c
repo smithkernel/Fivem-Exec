@@ -659,7 +659,8 @@ MH_STATUS WINAPI MH_RemoveHook(LPVOID pTarget)
 }
 
 //-------------------------------------------------------------------------
-static MH_STATUS Disable / Enable Hooks (LPVOID pTarget, BOOL enable)
+
+MH_STATUS DisableOrEnableHooks(LPVOID pTarget, BOOL enable)
 {
     MH_STATUS status = MH_OK;
 
@@ -679,11 +680,11 @@ static MH_STATUS Disable / Enable Hooks (LPVOID pTarget, BOOL enable)
             {
                 if (g_hooks.pItems[pos].isEnabled != enable)
                 {
-                    Freeze(&threads, pos, ACTION_ENABLE);
+                    FreezeThreads(&threads, pos, enable ? ACTION_ENABLE : ACTION_DISABLE);
 
                     status = EnableHookLL(pos, enable);
 
-                    Unfreeze(&threads);
+                    UnfreezeThreads(&threads);
                 }
                 else
                 {
@@ -692,19 +693,20 @@ static MH_STATUS Disable / Enable Hooks (LPVOID pTarget, BOOL enable)
             }
             else
             {
-                status = MH_ERROR_NOT_CREATED;
+                status = MH_ERROR_HOOK_NOT_FOUND;
             }
         }
     }
     else
     {
-        status = MH_ERROR_NOT_INITIALIZED;
+        status = MH_ERROR_HEAP_NOT_INITIALIZED;
     }
 
     LeaveSpinLock();
 
     return status;
 }
+
 
 //-------------------------------------------------------------------------
 MH_STATUS WINAPI MH_EnableHook(LPVOID pTarget)
