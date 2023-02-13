@@ -81,14 +81,15 @@ case DLL_PROCESS_DETACH:
     {
         MessageBoxA(NULL, "Failed to disable hook for CreateFileW", "Error", MB_OK | MB_ICONERROR);
     }
-
-    // Uninitialize the hook library
-    if (MH_Uninitialize() != MH_OK)
+    else
     {
-        MessageBoxA(NULL, "Failed to uninitialize hook library", "Error", MB_OK | MB_ICONERROR);
+        // Uninitialize the hook library
+        if (MH_Uninitialize() != MH_OK)
+        {
+            MessageBoxA(NULL, "Failed to uninitialize hook library", "Error", MB_OK | MB_ICONERROR);
+        }
     }
 }
 break;
-}
 
 return TRUE;
