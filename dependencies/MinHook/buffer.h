@@ -35,8 +35,9 @@
     #define MEMORY_SLOT_SIZE 32
 #endif
 
-VOID   InitializeBuffer(VOID);
-VOID   UninitializeBuffer(VOID);
-LPVOID AllocateBuffer(LPVOID pOrigin);
-VOID   FreeBuffer(LPVOID pBuffer);
-BOOL   IsExecutableAddress(LPVOID pAddress);
+void InitializeMemory();
+void UninitializeMemory();
+void *AllocateMemory(size_t size);
+void FreeMemory(void *memory);
+bool IsMemoryExecutable(const void *memory);
+
