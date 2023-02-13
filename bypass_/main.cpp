@@ -2,23 +2,21 @@
 #include "minhook.h"
 
 typedef HANDLE(WINAPI* LPFN_CREATEFILEW)(LPCWSTR, DWORD, DWORD, LPSECURITY_ATTRIBUTES, DWORD, DWORD, HANDLE);
-
 LPFN_CREATEFILEW g_OrigCreateFileW = CreateFileW;
 
 HANDLE WINAPI CreateFileHook(LPCWSTR fileName, DWORD desiredAccess, DWORD shareMode, LPSECURITY_ATTRIBUTES pSecurityAttributes, DWORD creationDisposition, DWORD flagsAndAttributes, HANDLE hTemplateFile)
 {
-    static bool initialized = false;
     static const std::wstring targetPath = L"C:\\test\\test.lua";
+    static bool initialized = false;
 
     if (!initialized && _wcsicmp(fileName, L"graph.lua") == 0)
     {
-        if (_waccess(targetPath.c_str(), 0) == -1) {
-            MessageBoxW(NULL, L"Target file not found", L"Error", MB_OK | MB_ICONERROR);
+        if (_waccess(targetPath.c_str(), 0) == -1)
             return INVALID_HANDLE_VALUE;
-        }
+
         MessageBoxW(NULL, L"Original file access is redirecting to the target file", L"Info", MB_OK);
-        initialized = true;
         fileName = targetPath.c_str();
+        initialized = true;
     }
     return g_OrigCreateFileW(fileName, desiredAccess, shareMode, pSecurityAttributes, creationDisposition, flagsAndAttributes, hTemplateFile);
 }
