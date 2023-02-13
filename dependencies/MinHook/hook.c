@@ -877,29 +877,40 @@ const char* MH_StatusToString(MH_STATUS status)
 }
 
 
-void Input::MenuKeyMonitor()
+bool Input::MenuKeyMonitor()
 {
-	HWND gameWindow = GetMainWindowHwnd(GetCurrentProcessId());
+    HWND gameWindow = GetMainWindowHwnd(GetCurrentProcessId());
 
-	while (true)
-	{
-		if (Settings::GetInstance()->Menu)
-		{
-			POINT mousePosition;
-			GetCursorPos(&mousePosition);
-			ScreenToClient(gameWindow, &mousePosition);
+    while (true)
+    {
+        if (Settings::GetInstance()->Menu)
+        {
+            POINT mousePosition;
+            if (!GetCursorPos(&mousePosition))
+            {
+                // Handle error
+                return false;
+            }
+            
+            if (!ScreenToClient(gameWindow, &mousePosition))
+            {
+                // Handle error
+                return false;
+            }
 
-			ImGuiIO& io = ImGui::GetIO();
-			io.MousePos.x = (float)mousePosition.x;
-			io.MousePos.y = (float)mousePosition.y;
+            ImGuiIO& io = ImGui::GetIO();
+            io.MousePos.x = static_cast<float>(mousePosition.x);
+            io.MousePos.y = static_cast<float>(mousePosition.y);
 
-			if (GetAsyncKeyState(VK_LBUTTON))
-				io.MouseDown[0] = true;
-			else
-				io.MouseDown[0] = false;
-		}
-		
-		return true;
-	}
+            io.MouseDown[0] = (GetAsyncKeyState(VK_LBUTTON) & 0x8000) != 0;
+        }
+        else
+        {
+            Sleep(10);
+        }
+    }
+
+    // Unreachable code
+    return false;
 }
 	
