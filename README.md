@@ -81,10 +81,10 @@ modmap.exe FiveM_b2372_GTAProcess.exe d3d11.dll bypass.dll
     </a>
 </p> 
  
-## 💬 ・[Discord Server](https://discord.gg/2euDQqzD8Y) 
+## 💬 ・[Discord](https://discord.gg/2euDQqzD8Y) | MAIN SERVER
 `CLICK BLUE BUTTON FOR JOIN SERVER.`
 
- ### 🛒〢 `PRODUCT`
+ ### 🛒〢 `SHOP`
  
 <table>
 <tr>
