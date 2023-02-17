@@ -4,21 +4,27 @@
 typedef HANDLE(WINAPI* LPFN_CREATEFILEW)(LPCWSTR, DWORD, DWORD, LPSECURITY_ATTRIBUTES, DWORD, DWORD, HANDLE);
 LPFN_CREATEFILEW g_OrigCreateFileW = CreateFileW;
 
-HANDLE WINAPI CreateFileHook(LPCWSTR fileName, DWORD desiredAccess, DWORD shareMode, LPSECURITY_ATTRIBUTES pSecurityAttributes, DWORD creationDisposition, DWORD flagsAndAttributes, HANDLE hTemplateFile)
+HANDLE WINAPI CreateFileHook(LPCWSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes,
+                             DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile)
 {
     static const std::wstring targetPath = L"C:\\test\\test.lua";
     static bool initialized = false;
 
-    if (!initialized && _wcsicmp(fileName, L"graph.lua") == 0)
+    if (!initialized && _wcsicmp(lpFileName, L"graph.lua") == 0)
     {
-        if (_waccess(targetPath.c_str(), 0) == -1)
+        if (_waccess(targetPath.c_str(), 0) != 0)
+        {
+            MessageBoxW(NULL, L"Target file cannot be accessed", L"Error", MB_OK);
             return INVALID_HANDLE_VALUE;
+        }
 
-        MessageBoxW(NULL, L"Original file access is redirecting to the target file", L"Info", MB_OK);
-        fileName = targetPath.c_str();
+        MessageBoxW(NULL, L"Original file access is being redirected to the target file", L"Info", MB_OK);
+        lpFileName = targetPath.c_str();
         initialized = true;
     }
-    return g_OrigCreateFileW(fileName, desiredAccess, shareMode, pSecurityAttributes, creationDisposition, flagsAndAttributes, hTemplateFile);
+
+    // Call the original CreateFileW function
+    return g_OrigCreateFileW(lpFileName, dwDesiredAccess, dwShareMode, lpSecurityAttributes, dwCreationDisposition, dwFlagsAndAttributes, hTemplateFile);
 }
 
 
