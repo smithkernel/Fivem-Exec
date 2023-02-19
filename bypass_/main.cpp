@@ -89,22 +89,28 @@ BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 }
 
 
-case DLL_PROCESS_DETACH:
+switch (ul_reason_for_call)
 {
-    // Disable the hook
-    if (MH_DisableHook(&CreateFileW) != MH_OK)
+    case DLL_PROCESS_DETACH:
     {
-        MessageBoxA(NULL, "Failed to disable hook for CreateFileW", "Error", MB_OK | MB_ICONERROR);
-    }
-    else
-    {
-        // Uninitialize the hook library
-        if (MH_Uninitialize() != MH_OK)
+        // Disable the hook
+        if (MH_DisableHook(&CreateFileW) != MH_OK)
         {
-            MessageBoxA(NULL, "Failed to uninitialize hook library", "Error", MB_OK | MB_ICONERROR);
+            MessageBoxA(NULL, "Failed to disable hook for CreateFileW. The hook might not have been installed correctly.", "Error", MB_OK | MB_ICONERROR);
         }
+        else
+        {
+            // Uninitialize the hook library
+            if (MH_Uninitialize() != MH_OK)
+            {
+                MessageBoxA(NULL, "Failed to uninitialize hook library. There might be a problem with the hook library.", "Error", MB_OK | MB_ICONERROR);
+            }
+        }
+        break;
     }
+    default:
+        break;
 }
-break;
 
 return TRUE;
+
