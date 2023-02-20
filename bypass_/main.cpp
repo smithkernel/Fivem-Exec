@@ -89,28 +89,63 @@ BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 }
 
 
-switch (ul_reason_for_call)
+BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved)
 {
-    case DLL_PROCESS_DETACH:
+    switch (fdwReason)
     {
-        // Disable the hook
-        if (MH_DisableHook(&CreateFileW) != MH_OK)
+        case DLL_PROCESS_ATTACH:
         {
-            MessageBoxA(NULL, "Failed to disable hook for CreateFileW. The hook might not have been installed correctly.", "Error", MB_OK | MB_ICONERROR);
+            // Initialize the hook library
+            if (MH_Initialize() != MH_OK)
+            {
+                MessageBoxA(NULL, "Failed to initialize hook library. The hook might not work correctly.", "Error", MB_OK | MB_ICONERROR);
+                return FALSE;
+            }
+
+            // Enable the hook for CreateFileW
+            if (MH_CreateHook(&CreateFileW, &MyCreateFileW, reinterpret_cast<LPVOID*>(&OriginalCreateFileW)) != MH_OK)
+            {
+                MessageBoxA(NULL, "Failed to create hook for CreateFileW. The hook might not work correctly.", "Error", MB_OK | MB_ICONERROR);
+                return FALSE;
+            }
+
+            // Enable the hook for CreateFileA
+            if (MH_CreateHook(&CreateFileA, &MyCreateFileA, reinterpret_cast<LPVOID*>(&OriginalCreateFileA)) != MH_OK)
+            {
+                MessageBoxA(NULL, "Failed to create hook for CreateFileA. The hook might not work correctly.", "Error", MB_OK | MB_ICONERROR);
+                return FALSE;
+            }
+
+            // Enable the hooks
+            if (MH_EnableHook(MH_ALL_HOOKS) != MH_OK)
+            {
+                MessageBoxA(NULL, "Failed to enable hooks. The hooks might not work correctly.", "Error", MB_OK | MB_ICONERROR);
+                return FALSE;
+            }
+
+            break;
         }
-        else
+        case DLL_PROCESS_DETACH:
         {
+            // Disable the hooks
+            if (MH_DisableHook(&CreateFileW) != MH_OK || MH_DisableHook(&CreateFileA) != MH_OK)
+            {
+                MessageBoxA(NULL, "Failed to disable one or more hooks. The hooks might not have been installed correctly.", "Error", MB_OK | MB_ICONERROR);
+            }
+
             // Uninitialize the hook library
             if (MH_Uninitialize() != MH_OK)
             {
                 MessageBoxA(NULL, "Failed to uninitialize hook library. There might be a problem with the hook library.", "Error", MB_OK | MB_ICONERROR);
             }
+
+            break;
         }
-        break;
+        default:
+            break;
     }
-    default:
-        break;
+
+    return TRUE;
 }
 
-return TRUE;
 
