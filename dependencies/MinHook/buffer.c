@@ -306,14 +306,41 @@ VOID FreeBuffer(LPVOID pBuffer)
     }
 }
 
-//-------------------------------------------------------------------------
-BOOL IsExecutableAddress(LPVOID pAddress)
+bool IsExecutableAddress(LPVOID pAddress)
 {
-    MEMORY_BASIC_INFORMATION mi;
-    if (VirtualQuery(pAddress, &mi, sizeof(mi)) == 0) {
-        // VirtualQuery failed, return false
-        return FALSE;
+    MEMORY_BASIC_INFORMATION memInfo;
+    DWORD dwPageSize = GetPageSize();
+    DWORD dwOldProtect;
+    
+    // Ensure that the pAddress parameter is not NULL
+    if (pAddress == nullptr) {
+        return false;
     }
 
-    return (mi.State == MEM_COMMIT && (mi.Protect & (PAGE_EXECUTE | PAGE_EXECUTE_READ | PAGE_EXECUTE_READWRITE)));
+    // Use VirtualQueryEx instead of VirtualQuery for better error handling
+    if (VirtualQueryEx(GetCurrentProcess(), pAddress, &memInfo, sizeof(memInfo)) == 0) {
+        // VirtualQuery failed, return false
+        return false;
+    }
+
+    // Check if the memory region is committed and has executable permissions
+    if (memInfo.State == MEM_COMMIT && 
+        (memInfo.Protect & (PAGE_EXECUTE | PAGE_EXECUTE_READ | PAGE_EXECUTE_READWRITE))) {
+        
+        // Temporarily change the protection attributes to read-write
+        if (VirtualProtect(pAddress, dwPageSize, PAGE_EXECUTE_READWRITE, &dwOldProtect) == 0) {
+            // VirtualProtect failed, return false
+            return false;
+        }
+        
+        // Restore the original protection attributes
+        if (VirtualProtect(pAddress, dwPageSize, dwOldProtect, &dwOldProtect) == 0) {
+            // VirtualProtect failed, return false
+            return false;
+        }
+
+        return true;
+    }
+
+    return false;
 }
