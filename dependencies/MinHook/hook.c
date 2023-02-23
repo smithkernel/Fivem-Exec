@@ -453,7 +453,10 @@ MH_STATUS WINAPI MH_Initialize(VOID)
 {
     MH_STATUS status = MH_OK;
 
-    EnterSpinLock();
+    static HANDLE g_hHeap = NULL;
+    static CRITICAL_SECTION g_cs;
+
+    EnterCriticalSection(&g_cs);
 
     if (g_hHeap == NULL)
     {
@@ -461,7 +464,10 @@ MH_STATUS WINAPI MH_Initialize(VOID)
         if (g_hHeap != NULL)
         {
             // Initialize the internal function buffer.
-            InitializeBuffer();
+            if (!InitializeBuffer())
+            {
+                status = MH_ERROR_INITIALIZATION_FAILED;
+            }
         }
         else
         {
@@ -473,7 +479,7 @@ MH_STATUS WINAPI MH_Initialize(VOID)
         status = MH_ERROR_ALREADY_INITIALIZED;
     }
 
-    LeaveSpinLock();
+    LeaveCriticalSection(&g_cs);
 
     return status;
 }
