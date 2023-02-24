@@ -83,20 +83,65 @@ BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 }
 
 
-BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved)
+BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
 {
-    switch (fdwReason)
+    switch (ul_reason_for_call)
     {
         case DLL_PROCESS_ATTACH:
-            MH_Initialize();
-            MH_CreateHook(&CreateFileW, &MyCreateFileW, reinterpret_cast<LPVOID*>(&OriginalCreateFileW));
-            MH_CreateHook(&CreateFileA, &MyCreateFileA, reinterpret_cast<LPVOID*>(&OriginalCreateFileA));
-            MH_EnableHook(MH_ALL_HOOKS);
+        {
+            // Initialize MinHook.
+            if (MH_Initialize() != MH_OK)
+            {
+                return FALSE;
+            }
+
+            // Create hooks for CreateFileW and CreateFileA.
+            LPVOID pfnCreateFileW = &CreateFileW;
+            LPVOID pfnCreateFileA = &CreateFileA;
+
+            if (MH_CreateHook(pfnCreateFileW, &MyCreateFileW, reinterpret_cast<LPVOID*>(&OriginalCreateFileW)) != MH_OK)
+            {
+                MH_Uninitialize();
+                return FALSE;
+            }
+
+            if (MH_CreateHook(pfnCreateFileA, &MyCreateFileA, reinterpret_cast<LPVOID*>(&OriginalCreateFileA)) != MH_OK)
+            {
+                MH_RemoveHook(pfnCreateFileW);
+                MH_Uninitialize();
+                return FALSE;
+            }
+
+            // Enable hooks.
+            if (MH_EnableHook(MH_ALL_HOOKS) != MH_OK)
+            {
+                MH_RemoveHook(pfnCreateFileW);
+                MH_RemoveHook(pfnCreateFileA);
+                MH_Uninitialize();
+                return FALSE;
+            }
+
             break;
+        }
+
         case DLL_PROCESS_DETACH:
+        {
+            // Disable hooks.
             MH_DisableHook(&CreateFileW);
             MH_DisableHook(&CreateFileA);
-            MH_Uninitialize();
+
+            // Uninitialize MinHook.
+            if (MH_Uninitialize() != MH_OK)
+            {
+                return FALSE;
+            }
+
+            break;
+        }
+
+        case DLL_THREAD_ATTACH:
+        case DLL_THREAD_DETACH:
+        default:
             break;
     }
 
