@@ -95,11 +95,11 @@ typedef struct {
 extern "C" {
 #endif
 
-/* __cdecl */
-unsigned int hde32_disasm(const void *code, hde32s *hs);
+/* Disassembles an x86 instruction and returns the length of the instruction in bytes. */
+unsigned int hde32_disasm(const void* code, hde32s* hs);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _HDE32_H_ */
+#endif /* HDE32_H */
