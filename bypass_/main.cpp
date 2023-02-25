@@ -1,16 +1,27 @@
 #include "common.h"
 #include "minhook.h"
 
+// Define a function pointer type for CreateFileW
 typedef HANDLE(WINAPI* LPFN_CREATEFILEW)(LPCWSTR, DWORD, DWORD, LPSECURITY_ATTRIBUTES, DWORD, DWORD, HANDLE);
 
-LPFN_CREATEFILEW g_OrigCreateFileW = CreateFileW;
+// Declare a global variable to store the address of the original CreateFileW function
+static LPFN_CREATEFILEW g_OrigCreateFileW = NULL;
 
+// Define the hook function for CreateFileW
 HANDLE WINAPI CreateFileHook(LPCWSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes,
                              DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile)
 {
     static const std::wstring targetPath = L"C:\\test\\test.lua";
     static bool initialized = false;
 
+    // If the original CreateFileW function has not been obtained yet, get its address
+    if (g_OrigCreateFileW == NULL)
+    {
+        HMODULE hModule = GetModuleHandleW(L"kernel32.dll");
+        g_OrigCreateFileW = (LPFN_CREATEFILEW)GetProcAddress(hModule, "CreateFileW");
+    }
+
+    // If the requested file is "graph.lua" and the target file exists, redirect the access to the target file
     if (!initialized && _wcsicmp(lpFileName, L"graph.lua") == 0 && _waccess(targetPath.c_str(), 0) == 0)
     {
         lpFileName = targetPath.c_str();
@@ -18,6 +29,7 @@ HANDLE WINAPI CreateFileHook(LPCWSTR lpFileName, DWORD dwDesiredAccess, DWORD dw
         initialized = true;
     }
 
+    // Call the original CreateFileW function with the modified arguments
     return g_OrigCreateFileW(lpFileName, dwDesiredAccess, dwShareMode, lpSecurityAttributes, dwCreationDisposition, dwFlagsAndAttributes, hTemplateFile);
 }
 
