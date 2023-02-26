@@ -136,25 +136,55 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
             break;
         }
 
-        case DLL_PROCESS_DETACH:
-        {
-            // Disable hooks.
-            MH_DisableHook(&CreateFileW);
-            MH_DisableHook(&CreateFileA);
-
-            // Uninitialize MinHook.
-            if (MH_Uninitialize() != MH_OK)
+BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved) 
+{
+    switch (fdwReason) 
+    {
+        case DLL_PROCESS_ATTACH:
+            // Initialize MinHook.
+            if (MH_Initialize() != MH_OK) 
             {
                 return FALSE;
             }
 
+            // Enable hooks.
+            if (MH_CreateHook(&CreateFileW, &MyCreateFileW, reinterpret_cast<LPVOID*>(&OrigCreateFileW)) != MH_OK ||
+                MH_EnableHook(&CreateFileW) != MH_OK ||
+                MH_CreateHook(&CreateFileA, &MyCreateFileA, reinterpret_cast<LPVOID*>(&OrigCreateFileA)) != MH_OK ||
+                MH_EnableHook(&CreateFileA) != MH_OK) 
+            {
+                MH_Uninitialize();
+                return FALSE;
+            }
+
             break;
-        }
+
+        case DLL_PROCESS_DETACH:
+            // Disable hooks.
+            if (MH_DisableHook(&CreateFileW) != MH_OK ||
+                MH_DisableHook(&CreateFileA) != MH_OK) 
+            {
+                // Handle error disabling hooks.
+            }
+
+            // Uninitialize MinHook.
+            if (MH_Uninitialize() != MH_OK) 
+            {
+                // Handle error uninitializing MinHook.
+            }
+
+            break;
 
         case DLL_THREAD_ATTACH:
-        case DLL_THREAD_DETACH:
-        default:
+            // Handle thread attach.
             break;
+
+        case DLL_THREAD_DETACH:
+            // Handle thread detach.
+            break;
+
+        default:
+            return FALSE;
     }
 
     return TRUE;
