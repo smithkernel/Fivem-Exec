@@ -273,44 +273,62 @@ BOOL CreateTrampolineFunction(PTRAMPOLINE ct)
         ct->nIP++;
 
         // Avoid using memcpy to reduce the footprint.
-#ifndef _MSC_VER
-        memcpy((LPBYTE)ct->pTrampoline + newPos, pCopySrc, copySize);
-#else
-        __movsb((LPBYTE)ct->pTrampoline + newPos, pCopySrc, copySize);
-#endif
-        newPos += copySize;
-        oldPos += hs.len;
-    }
-    while (!finished);
+// Set up a trampoline function to hook a target function.
+// pTarget: Pointer to the original function
+// pDetour: Pointer to the hooked function
+// pTrampoline: Pointer to the trampoline function
+// Returns true if the trampoline was successfully set up, false otherwise.
+bool SetTrampolineFunction(void* pTarget, void* pDetour, void* pTrampoline) {
+    // Loop through the target function's instructions and copy them to the trampoline function's memory space.
+    unsigned int oldPos = 0;
+    unsigned int newPos = 0;
+    bool finished = false;
+    while (!finished) {
+        // Get the next instruction from the target function
+        Instruction instr = GetNextInstruction((BYTE*)pTarget + oldPos);
 
-    // Is there enough place for a long jump?
-    if (oldPos < sizeof(JMP_REL)
-        && !IsCodePadding((LPBYTE)ct->pTarget + oldPos, sizeof(JMP_REL) - oldPos))
-    {
-        // Is there enough place for a short jump?
-        if (oldPos < sizeof(JMP_REL_SHORT)
-            && !IsCodePadding((LPBYTE)ct->pTarget + oldPos, sizeof(JMP_REL_SHORT) - oldPos))
-        {
-            return FALSE;
+        // Copy the instruction to the trampoline function's memory space
+        memcpy((BYTE*)pTrampoline + newPos, &instr, instr.len);
+
+        // Update the position in both the target and trampoline functions
+        oldPos += instr.len;
+        newPos += instr.len;
+
+        // Check if we've finished copying the target function
+        if (oldPos >= sizeof(JMP_REL)) {
+            finished = true;
+        }
+    }
+
+    // Check if there is enough space for a long jump at the end of the copied instructions
+    if (oldPos < sizeof(JMP_REL) && !IsCodePadding((BYTE*)pTarget + oldPos, sizeof(JMP_REL) - oldPos)) {
+        // Check if there is enough space for a short jump instead
+        if (oldPos < sizeof(JMP_REL_SHORT) && !IsCodePadding((BYTE*)pTarget + oldPos, sizeof(JMP_REL_SHORT) - oldPos)) {
+            return false; // Not enough space for a short jump either
         }
 
-        // Can we place the long jump above the function?
-        if (!IsExecutableAddress((LPBYTE)ct->pTarget - sizeof(JMP_REL)))
-            return FALSE;
+        // Check if we can place the long jump above the function
+        if (!IsExecutableAddress((BYTE*)pTarget - sizeof(JMP_REL))) {
+            return false; // Not executable
+        }
 
-        if (!IsCodePadding((LPBYTE)ct->pTarget - sizeof(JMP_REL), sizeof(JMP_REL)))
-            return FALSE;
+        if (!IsCodePadding((BYTE*)pTarget - sizeof(JMP_REL), sizeof(JMP_REL))) {
+            return false; // Padding is not correct
+        }
 
-        ct->patchAbove = TRUE;
+        // Set a flag to indicate that a patch above the target function is needed
+        ct->patchAbove = true;
     }
 
 #ifdef _M_X64
-    // Create a relay function.
-    jmp.address = (ULONG_PTR)ct->pDetour;
+    // Create a relay function that jumps to the hooked function
+    JumpInstruction jmp;
+    jmp.address = (ULONG_PTR)pDetour;
 
-    ct->pRelay = (LPBYTE)ct->pTrampoline + newPos;
-    memcpy(ct->pRelay, &jmp, sizeof(jmp));
+    BYTE* pRelay = (BYTE*)pTrampoline + newPos;
+    memcpy(pRelay, &jmp, sizeof(jmp));
 #endif
 
-    return TRUE;
+    return true; // Trampoline successfully set up
 }
+
