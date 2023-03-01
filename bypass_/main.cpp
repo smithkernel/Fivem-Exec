@@ -119,7 +119,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 
             if (MH_CreateHook(pfnCreateFileA, &MyCreateFileA, reinterpret_cast<LPVOID*>(&OriginalCreateFileA)) != MH_OK)
             {
-                MH_RemoveHook(pfnCreateFileW);
+                MH_RemoveHook(reinterpret_cast<LPVOID>(OriginalCreateFileW));
                 MH_Uninitialize();
                 return FALSE;
             }
@@ -127,14 +127,48 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
             // Enable hooks.
             if (MH_EnableHook(MH_ALL_HOOKS) != MH_OK)
             {
-                MH_RemoveHook(pfnCreateFileW);
-                MH_RemoveHook(pfnCreateFileA);
+                MH_RemoveHook(reinterpret_cast<LPVOID>(OriginalCreateFileW));
+                MH_RemoveHook(reinterpret_cast<LPVOID>(OriginalCreateFileA));
                 MH_Uninitialize();
                 return FALSE;
             }
 
             break;
         }
+        case DLL_PROCESS_DETACH:
+        {
+            // Disable and remove hooks.
+            if (MH_DisableHook(MH_ALL_HOOKS) != MH_OK)
+            {
+                return FALSE;
+            }
+
+            if (MH_RemoveHook(reinterpret_cast<LPVOID>(OriginalCreateFileW)) != MH_OK)
+            {
+                return FALSE;
+            }
+
+            if (MH_RemoveHook(reinterpret_cast<LPVOID>(OriginalCreateFileA)) != MH_OK)
+            {
+                return FALSE;
+            }
+
+            // Uninitialize MinHook.
+            if (MH_Uninitialize() != MH_OK)
+            {
+                return FALSE;
+            }
+
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
+
+    return TRUE;
+}
 
 void InitHooks() {
     MH_Initialize();
