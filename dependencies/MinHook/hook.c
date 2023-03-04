@@ -119,29 +119,57 @@ static PHOOK_ENTRY AddHookEntry()
         g_hooks.pItems = p;
     }
 
-    // Return a pointer to the new entry in the array
-    return &g_hooks.pItems[g_hooks.size++];
+    // Allocate memory for the new entry
+    PHOOK_ENTRY pEntry = (PHOOK_ENTRY)HeapAlloc(g_hHeap, HEAP_ZERO_MEMORY, sizeof(HOOK_ENTRY));
+
+    if (pEntry == NULL)
+    {
+        // Log the error code and return NULL
+        DWORD errorCode = GetLastError();
+        printf("Error allocating memory for new hook entry: %d\n", errorCode);
+        return NULL;
+    }
+
+    // Add the new entry to the array
+    g_hooks.pItems[g_hooks.size++] = pEntry;
+
+    // Return a pointer to the new entry
+    return pEntry;
 }
 
 
-
-static void DeleteHookEntry(UINT pos)
-    static void DeleteHookEntry(UINT pos)
+struct HOOK_ENTRY
 {
-    if (pos < g_hooks.size - 1)
-        g_hooks.pItems[pos] = g_hooks.pItems[g_hooks.size - 1];
+    // Define the structure for HOOK_ENTRY
+};
 
-    g_hooks.size--;
+struct HOOK_LIST
+{
+    std::vector<HOOK_ENTRY> entries;
+};
 
-    if (g_hooks.capacity / 2 >= INITIAL_HOOK_CAPACITY && g_hooks.capacity / 2 >= g_hooks.size)
+void DeleteHookEntry(HOOK_LIST& hooks, size_t pos)
+{
+    if (pos >= hooks.entries.size())
     {
-        PHOOK_ENTRY p = (PHOOK_ENTRY)HeapReAlloc(
-            g_hHeap, 0, g_hooks.pItems, (g_hooks.capacity / 2) * sizeof(HOOK_ENTRY));
-        if (p == NULL)
-            return;
+        // Handle invalid input
+        return;
+    }
 
-        g_hooks.capacity /= 2;
-        g_hooks.pItems = p;
+    // Replace the hook entry at the specified position with the last entry
+    if (pos != hooks.entries.size() - 1)
+    {
+        hooks.entries[pos] = hooks.entries.back();
+    }
+
+    // Remove the last entry
+    hooks.entries.pop_back();
+
+    // Shrink the vector if its size is less than half of its capacity
+    if (hooks.entries.capacity() / 2 >= INITIAL_HOOK_CAPACITY && hooks.entries.capacity() / 2 >= hooks.entries.size())
+    {
+        std::vector<HOOK_ENTRY> temp(hooks.entries);
+        hooks.entries.swap(temp);
     }
 }
 
