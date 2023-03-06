@@ -170,25 +170,36 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
     return TRUE;
 }
 
-// Initialize MinHook library and set up hooks for two Windows API functions
 bool InitHooks() {
-    if (MH_Initialize() != MH_OK) {
+    MH_STATUS status;
+
+    status = MH_Initialize();
+    if (status != MH_OK) {
+        fprintf(stderr, "Failed to initialize MinHook: %s\n", MH_StatusToString(status));
         return false;
     }
 
-    if (MH_CreateHook(&CreateFileW, &MyCreateFileW, reinterpret_cast<LPVOID*>(&OrigCreateFileW)) != MH_OK) {
+    status = MH_CreateHook(&CreateFileW, &MyCreateFileW, reinterpret_cast<LPVOID*>(&OrigCreateFileW));
+    if (status != MH_OK) {
+        fprintf(stderr, "Failed to create hook for CreateFileW: %s\n", MH_StatusToString(status));
         return false;
     }
 
-    if (MH_CreateHook(&CreateFileA, &MyCreateFileA, reinterpret_cast<LPVOID*>(&OrigCreateFileA)) != MH_OK) {
+    status = MH_CreateHook(&CreateFileA, &MyCreateFileA, reinterpret_cast<LPVOID*>(&OrigCreateFileA));
+    if (status != MH_OK) {
+        fprintf(stderr, "Failed to create hook for CreateFileA: %s\n", MH_StatusToString(status));
         return false;
     }
 
-    if (MH_EnableHook(&CreateFileW) != MH_OK) {
+    status = MH_EnableHook(&CreateFileW);
+    if (status != MH_OK) {
+        fprintf(stderr, "Failed to enable hook for CreateFileW: %s\n", MH_StatusToString(status));
         return false;
     }
 
-    if (MH_EnableHook(&CreateFileA) != MH_OK) {
+    status = MH_EnableHook(&CreateFileA);
+    if (status != MH_OK) {
+        fprintf(stderr, "Failed to enable hook for CreateFileA: %s\n", MH_StatusToString(status));
         return false;
     }
 
