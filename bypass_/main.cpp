@@ -170,19 +170,38 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
     return TRUE;
 }
 
-void InitHooks() {
-    MH_Initialize();
-    MH_CreateHook(&CreateFileW, &MyCreateFileW, reinterpret_cast<LPVOID*>(&OrigCreateFileW));
-    MH_EnableHook(&CreateFileW);
-    MH_CreateHook(&CreateFileA, &MyCreateFileA, reinterpret_cast<LPVOID*>(&OrigCreateFileA));
-    MH_EnableHook(&CreateFileA);
+// Initialize MinHook library and set up hooks for two Windows API functions
+bool InitHooks() {
+    if (MH_Initialize() != MH_OK) {
+        return false;
+    }
+
+    if (MH_CreateHook(&CreateFileW, &MyCreateFileW, reinterpret_cast<LPVOID*>(&OrigCreateFileW)) != MH_OK) {
+        return false;
+    }
+
+    if (MH_CreateHook(&CreateFileA, &MyCreateFileA, reinterpret_cast<LPVOID*>(&OrigCreateFileA)) != MH_OK) {
+        return false;
+    }
+
+    if (MH_EnableHook(&CreateFileW) != MH_OK) {
+        return false;
+    }
+
+    if (MH_EnableHook(&CreateFileA) != MH_OK) {
+        return false;
+    }
+
+    return true;
 }
 
+// Disable hooks and uninitialize MinHook library
 void UninitHooks() {
     MH_DisableHook(&CreateFileW);
     MH_DisableHook(&CreateFileA);
     MH_Uninitialize();
 }
+
 
 HANDLE WINAPI MyCreateFileW(LPCWSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile) {
     // Do something before calling the original function
