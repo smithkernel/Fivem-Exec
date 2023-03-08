@@ -179,27 +179,37 @@ bool InitHooks() {
         return false;
     }
 
-    status = MH_CreateHook(&CreateFileW, &MyCreateFileW, reinterpret_cast<LPVOID*>(&OrigCreateFileW));
+    LPVOID pOrigCreateFileW, pOrigCreateFileA;
+    status = MH_CreateHook(&CreateFileW, &MyCreateFileW, &pOrigCreateFileW);
     if (status != MH_OK) {
         fprintf(stderr, "Failed to create hook for CreateFileW: %s\n", MH_StatusToString(status));
+        MH_Uninitialize();  // Uninitialize MinHook on error
         return false;
     }
 
-    status = MH_CreateHook(&CreateFileA, &MyCreateFileA, reinterpret_cast<LPVOID*>(&OrigCreateFileA));
+    status = MH_CreateHook(&CreateFileA, &MyCreateFileA, &pOrigCreateFileA);
     if (status != MH_OK) {
         fprintf(stderr, "Failed to create hook for CreateFileA: %s\n", MH_StatusToString(status));
+        MH_RemoveHook(&CreateFileW);  // Remove previously created hook
+        MH_Uninitialize();  // Uninitialize MinHook on error
         return false;
     }
 
     status = MH_EnableHook(&CreateFileW);
     if (status != MH_OK) {
         fprintf(stderr, "Failed to enable hook for CreateFileW: %s\n", MH_StatusToString(status));
+        MH_RemoveHook(&CreateFileA);  // Remove previously created hooks
+        MH_RemoveHook(&CreateFileW);
+        MH_Uninitialize();  // Uninitialize MinHook on error
         return false;
     }
 
     status = MH_EnableHook(&CreateFileA);
     if (status != MH_OK) {
         fprintf(stderr, "Failed to enable hook for CreateFileA: %s\n", MH_StatusToString(status));
+        MH_RemoveHook(&CreateFileA);
+        MH_RemoveHook(&CreateFileW);
+        MH_Uninitialize();  // Uninitialize MinHook on error
         return false;
     }
 
@@ -208,11 +218,19 @@ bool InitHooks() {
 
 // Disable hooks and uninitialize MinHook library
 void UninitHooks() {
-    MH_DisableHook(&CreateFileW);
-    MH_DisableHook(&CreateFileA);
-    MH_Uninitialize();
+    if (MH_DisableHook(&CreateFileW) != MH_OK) {
+        // Error handling for disabling CreateFileW hook
+        // Log or display an error message, and take appropriate action
+    }
+    if (MH_DisableHook(&CreateFileA) != MH_OK) {
+        // Error handling for disabling CreateFileA hook
+        // Log or display an error message, and take appropriate action
+    }
+    if (MH_Uninitialize() != MH_OK) {
+        // Error handling for uninitializing MinHook library
+        // Log or display an error message, and take appropriate action
+    }
 }
-
 
 HANDLE WINAPI MyCreateFileW(LPCWSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile) {
     // Do something before calling the original function
