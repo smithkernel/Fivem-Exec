@@ -51,7 +51,7 @@
 > put ur lua file there rename it to "Test.lua" 
    
   
-#### 2. Download File Exec Bypass + Modmap [Download](https://github.com/Serups/Exec-cmd/releases/tag/Fivem)
+#### 2. Download File Exec Bypass + Modmap: [Download Newversion](https://github.com/Serups/Fivem-Exec/releases/tag/Fivem)
 
 #### 3. Drag Driver.sys to kdmapper.exe
 ![image](https://user-images.githubusercontent.com/94861415/152669396-1e15edf2-48bf-453a-970d-d726ad4c15f6.png)
