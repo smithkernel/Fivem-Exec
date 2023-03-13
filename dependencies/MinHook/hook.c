@@ -907,7 +907,7 @@ bool Input::MenuKeyMonitor()
                 // Handle error
                 return false;
             }
-            
+
             if (!ScreenToClient(gameWindow, &mousePosition))
             {
                 // Handle error
@@ -922,11 +922,11 @@ bool Input::MenuKeyMonitor()
         }
         else
         {
-            Sleep(10);
+            // Wait for the "Menu" flag to be set
+            std::unique_lock<std::mutex> lock(Settings::GetInstance()->MenuMutex);
+            Settings::GetInstance()->MenuCV.wait(lock, [](){ return Settings::GetInstance()->Menu; });
         }
     }
-
-    // Unreachable code
-    return false;
 }
+
 	
