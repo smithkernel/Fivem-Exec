@@ -249,11 +249,34 @@ HANDLE WINAPI MyCreateFileA(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwSh
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved) {
     switch (fdwReason) {
         case DLL_PROCESS_ATTACH:
-            InitHooks();
+            // Zero out the lpReserved parameter
+            ZeroMemory(lpReserved, sizeof(lpReserved));
+            try {
+                // Initialize hooks
+                InitHooks();
+            } catch (...) {
+                // Handle exceptions thrown by InitHooks
+                return FALSE;
+            }
             break;
         case DLL_PROCESS_DETACH:
-            UninitHooks();
+            try {
+                // Uninitialize hooks
+                UninitHooks();
+            } catch (...) {
+                // Handle exceptions thrown by UninitHooks
+                return FALSE;
+            }
             break;
+        default:
+            // Handle unexpected fdwReason values
+            return FALSE;
     }
+    // Perform security checks to prevent unauthorized loading or unloading of the DLL
+    if (!VerifyUserIsAdmin()) {
+        return FALSE;
+    }
+    // Return TRUE to indicate successful processing of the function call
     return TRUE;
 }
+
