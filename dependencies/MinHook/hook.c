@@ -896,11 +896,13 @@ const char* MH_StatusToString(MH_STATUS status)
 bool Input::MenuKeyMonitor()
 {
     HWND gameWindow = GetMainWindowHwnd(GetCurrentProcessId());
+    bool menuFlag = false;
 
     while (true)
     {
         if (Settings::GetInstance()->Menu)
         {
+            menuFlag = true;
             POINT mousePosition;
             if (!GetCursorPos(&mousePosition))
             {
@@ -920,13 +922,19 @@ bool Input::MenuKeyMonitor()
 
             io.MouseDown[0] = (GetAsyncKeyState(VK_LBUTTON) & 0x8000) != 0;
         }
-        else
+        else if (menuFlag)
         {
-            // Wait for the "Menu" flag to be set
-            std::unique_lock<std::mutex> lock(Settings::GetInstance()->MenuMutex);
-            Settings::GetInstance()->MenuCV.wait(lock, [](){ return Settings::GetInstance()->Menu; });
+            // Reset mouse position and button state
+            ImGuiIO& io = ImGui::GetIO();
+            io.MousePos = ImVec2(-FLT_MAX, -FLT_MAX);
+            io.MouseDown[0] = false;
+            menuFlag = false;
         }
+
+        // Wait for a short delay
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 }
+
 
 	
