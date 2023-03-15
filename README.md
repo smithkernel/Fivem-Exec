@@ -25,7 +25,7 @@
 - **Scroll Down for Raed more**
      
 #### ❗ Help & Support
-- Not understand How To Use | Join Discord For Helps: [Discord Servers](https://discord.gg/2euDQqzD8Y)
+- Not understand How To Use | Join Telegram For Helps: [Telegram](https://t.me/Serups)
 
 ---
 
@@ -39,10 +39,11 @@
 
 ---
 
-### <a id="setup2"></a> 🗒 〢 Undetected
+## <a id="setup2"></a> 🗒 〢 Undetected
 - Free version is used by many Users, Detected are quite High | Our recommended alternative is Private Cheat.
 - **Legit Playing & Waranty & Lifetime | Up To You.**
-- [Discord Server](https://discord.gg/2euDQqzD8Y) 
+- [Telegram](https://t.me/Serups)
+
 
 ---
 
@@ -83,14 +84,15 @@ modmap.exe FiveM_b2372_GTAProcess.exe d3d11.dll bypass.dll
 --- 
 
   <p align="center">
-    <a href="https://discord.gg/2euDQqzD8Y">
-        <img title="Serups server discord" alt="Serups discord" src="https://discordapp.com/api/guilds/923947526552432731/widget.png?style=banner2"/>
+    <a href="https://discord.com/users/1031783571905581137">
+        <img title="Serups" alt="Serups's discord" src="https://discord.c99.nl/widget/theme-4/1031783571905581137.png"/>
     </a>
-</p> 
+</p>
  
-## 💬 ・[Discord](https://discord.gg/2euDQqzD8Y)
+## 💬 ・[Telegram](https://t.me/Serups)
 
-`BLUE BUTTON FOR JOIN SERVER`
+- Now we Buy order in Telegram for privacy | [Download Telegram](https://desktop.telegram.org/?setln=en)
+- It is safer than Discord and Faster
 
  ### 🛒〢 `SHOP`
  
@@ -113,7 +115,7 @@ modmap.exe FiveM_b2372_GTAProcess.exe d3d11.dll bypass.dll
 - **Support 24/7 & Free updated** 
 - **Banned = `FULL REFUND`**
 
-#### Website | Resume [Serups.me](http://Serups.me/)
+#### Website | Activated [Serups.me](http://Serups.me/)
 
 ---
 
@@ -122,7 +124,3 @@ modmap.exe FiveM_b2372_GTAProcess.exe d3d11.dll bypass.dll
 <p align="center">
   Copyright © 2023 All rights reserved
 <br>
-
-
-
-
