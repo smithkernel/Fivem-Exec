@@ -249,9 +249,21 @@ HANDLE WINAPI MyCreateFileA(LPCSTR lpFileName, DWORD dwDesiredAccess, DWORD dwSh
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved) {
     switch (fdwReason) {
         case DLL_PROCESS_ATTACH:
+            // Disable thread notifications to improve performance and security
+            DisableThreadLibraryCalls(hinstDLL);
             // Zero out the lpReserved parameter
             ZeroMemory(lpReserved, sizeof(lpReserved));
             try {
+                // Perform security checks to prevent DLL injection attacks
+                if (!IsProcessRunningInsideWindowsExplorer()) {
+                    return FALSE;
+                }
+                if (!VerifyLoadedModuleIsSigned()) {
+                    return FALSE;
+                }
+                if (!VerifyLoadedModulePath()) {
+                    return FALSE;
+                }
                 // Initialize hooks
                 InitHooks();
             } catch (...) {
