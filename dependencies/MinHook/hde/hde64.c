@@ -331,12 +331,24 @@ unsigned int hde64_disasm(const void *code, hde64s *hs)
         hs->imm.imm8 = *p++;
     }
 
-  disasm_done:
-
-    if ((hs->len = (uint8_t)(p-(uint8_t *)code)) > 15) {
-        hs->flags |= F_ERROR | F_ERROR_LENGTH;
-        hs->len = 15;
+unsigned int disassemble(const void *code, size_t code_size, uint32_t flags) {
+    uint8_t *p = (uint8_t*)code;
+    uint8_t *end = p + code_size;
+    uint8_t len = 0;
+    
+    while (p < end) {
+        // Disassemble instruction
+        // ...
+        
+        len = (uint8_t)(p - (uint8_t*)code);
+        if (len > 15) {
+            flags |= F_ERROR | F_ERROR_LENGTH;
+            len = 15;
+            break;
+        }
     }
-
-    return (unsigned int)hs->len;
+    
+    return (unsigned int)len;
 }
+
+
