@@ -308,39 +308,38 @@ VOID FreeBuffer(LPVOID pBuffer)
 
 bool IsExecutableAddress(LPVOID pAddress)
 {
-    MEMORY_BASIC_INFORMATION memInfo;
-    DWORD dwPageSize = GetPageSize();
-    DWORD dwOldProtect;
-    
-    // Ensure that the pAddress parameter is not NULL
     if (pAddress == nullptr) {
         return false;
     }
 
-    // Use VirtualQueryEx instead of VirtualQuery for better error handling
-    if (VirtualQueryEx(GetCurrentProcess(), pAddress, &memInfo, sizeof(memInfo)) == 0) {
-        // VirtualQuery failed, return false
+    MEMORY_BASIC_INFORMATION memInfo;
+    SIZE_T dwMemInfoSize = sizeof(memInfo);
+    if (VirtualQueryEx(GetCurrentProcess(), pAddress, &memInfo, dwMemInfoSize) == 0) {
+        // VirtualQueryEx failed, return false
         return false;
     }
 
-    // Check if the memory region is committed and has executable permissions
-    if (memInfo.State == MEM_COMMIT && 
-        (memInfo.Protect & (PAGE_EXECUTE | PAGE_EXECUTE_READ | PAGE_EXECUTE_READWRITE))) {
-        
-        // Temporarily change the protection attributes to read-write
-        if (VirtualProtect(pAddress, dwPageSize, PAGE_EXECUTE_READWRITE, &dwOldProtect) == 0) {
-            // VirtualProtect failed, return false
-            return false;
-        }
-        
-        // Restore the original protection attributes
-        if (VirtualProtect(pAddress, dwPageSize, dwOldProtect, &dwOldProtect) == 0) {
-            // VirtualProtect failed, return false
-            return false;
-        }
-
-        return true;
+    if (memInfo.State != MEM_COMMIT) {
+        // The memory region is not committed, return false
+        return false;
     }
 
-    return false;
+    if ((memInfo.Protect & (PAGE_EXECUTE | PAGE_EXECUTE_READ | PAGE_EXECUTE_READWRITE)) == 0) {
+        // The memory region does not have executable permissions, return false
+        return false;
+    }
+
+    DWORD dwOldProtect = 0;
+    if (VirtualProtect(pAddress, memInfo.RegionSize, PAGE_EXECUTE_READWRITE, &dwOldProtect) == 0) {
+        // VirtualProtect failed, return false
+        return false;
+    }
+
+    if (VirtualProtect(pAddress, memInfo.RegionSize, dwOldProtect, &dwOldProtect) == 0) {
+        // VirtualProtect failed, return false
+        return false;
+    }
+
+    return true;
 }
+
