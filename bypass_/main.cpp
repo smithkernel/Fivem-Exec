@@ -172,6 +172,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
 
 bool InitHooks() {
     MH_STATUS status;
+    LPVOID pOrigCreateFileW = NULL, pOrigCreateFileA = NULL;
 
     status = MH_Initialize();
     if (status != MH_OK) {
@@ -179,42 +180,41 @@ bool InitHooks() {
         return false;
     }
 
-    LPVOID pOrigCreateFileW, pOrigCreateFileA;
     status = MH_CreateHook(&CreateFileW, &MyCreateFileW, &pOrigCreateFileW);
     if (status != MH_OK) {
         fprintf(stderr, "Failed to create hook for CreateFileW: %s\n", MH_StatusToString(status));
-        MH_Uninitialize();  // Uninitialize MinHook on error
-        return false;
+        goto cleanup;
     }
 
     status = MH_CreateHook(&CreateFileA, &MyCreateFileA, &pOrigCreateFileA);
     if (status != MH_OK) {
         fprintf(stderr, "Failed to create hook for CreateFileA: %s\n", MH_StatusToString(status));
-        MH_RemoveHook(&CreateFileW);  // Remove previously created hook
-        MH_Uninitialize();  // Uninitialize MinHook on error
-        return false;
+        goto cleanup_remove_w;
     }
 
     status = MH_EnableHook(&CreateFileW);
     if (status != MH_OK) {
         fprintf(stderr, "Failed to enable hook for CreateFileW: %s\n", MH_StatusToString(status));
-        MH_RemoveHook(&CreateFileA);  // Remove previously created hooks
-        MH_RemoveHook(&CreateFileW);
-        MH_Uninitialize();  // Uninitialize MinHook on error
-        return false;
+        goto cleanup_remove_a;
     }
 
     status = MH_EnableHook(&CreateFileA);
     if (status != MH_OK) {
         fprintf(stderr, "Failed to enable hook for CreateFileA: %s\n", MH_StatusToString(status));
-        MH_RemoveHook(&CreateFileA);
-        MH_RemoveHook(&CreateFileW);
-        MH_Uninitialize();  // Uninitialize MinHook on error
-        return false;
+        goto cleanup_remove_w;
     }
 
     return true;
+
+cleanup_remove_a:
+    MH_RemoveHook(&CreateFileA);
+cleanup_remove_w:
+    MH_RemoveHook(&CreateFileW);
+cleanup:
+    MH_Uninitialize();
+    return false;
 }
+
 
 // Disable hooks and uninitialize MinHook library
 void UninitHooks() {
