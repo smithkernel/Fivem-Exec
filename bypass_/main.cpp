@@ -95,83 +95,33 @@ BOOL WINAPI DllMain(HINSTANCE hModule, DWORD dwReason, LPVOID lpReserved)
 }
 
 
-BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
+#include <Windows.h>
+#include <MinHook.h>
+
+BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
 {
     switch (ul_reason_for_call)
     {
         case DLL_PROCESS_ATTACH:
-        {
-            // Initialize MinHook.
-            if (MH_Initialize() != MH_OK)
-            {
-                return FALSE;
-            }
-
-            // Create hooks for CreateFileW and CreateFileA.
-            LPVOID pfnCreateFileW = &CreateFileW;
-            LPVOID pfnCreateFileA = &CreateFileA;
-
-            if (MH_CreateHook(pfnCreateFileW, &MyCreateFileW, reinterpret_cast<LPVOID*>(&OriginalCreateFileW)) != MH_OK)
-            {
-                MH_Uninitialize();
-                return FALSE;
-            }
-
-            if (MH_CreateHook(pfnCreateFileA, &MyCreateFileA, reinterpret_cast<LPVOID*>(&OriginalCreateFileA)) != MH_OK)
-            {
-                MH_RemoveHook(reinterpret_cast<LPVOID>(OriginalCreateFileW));
-                MH_Uninitialize();
-                return FALSE;
-            }
-
-            // Enable hooks.
-            if (MH_EnableHook(MH_ALL_HOOKS) != MH_OK)
-            {
-                MH_RemoveHook(reinterpret_cast<LPVOID>(OriginalCreateFileW));
-                MH_RemoveHook(reinterpret_cast<LPVOID>(OriginalCreateFileA));
-                MH_Uninitialize();
-                return FALSE;
-            }
-
+            MH_Initialize();
+            MH_CreateHookApi(L"kernel32", "CreateFileW", MyCreateFileW, reinterpret_cast<LPVOID*>(&OriginalCreateFileW));
+            MH_CreateHookApi(L"kernel32", "CreateFileA", MyCreateFileA, reinterpret_cast<LPVOID*>(&OriginalCreateFileA));
+            MH_EnableHook(MH_ALL_HOOKS);
             break;
-        }
+
         case DLL_PROCESS_DETACH:
-        {
-            // Disable and remove hooks.
-            if (MH_DisableHook(MH_ALL_HOOKS) != MH_OK)
-            {
-                return FALSE;
-            }
-
-            if (MH_RemoveHook(reinterpret_cast<LPVOID>(OriginalCreateFileW)) != MH_OK)
-            {
-                return FALSE;
-            }
-
-            if (MH_RemoveHook(reinterpret_cast<LPVOID>(OriginalCreateFileA)) != MH_OK)
-            {
-                return FALSE;
-            }
-
-            // Uninitialize MinHook.
-            if (MH_Uninitialize() != MH_OK)
-            {
-                return FALSE;
-            }
-
+            MH_DisableHook(MH_ALL_HOOKS);
+            MH_Uninitialize();
             break;
-        }
-        default:
-        {
-            break;
-        }
     }
 
     return TRUE;
 }
 
+
 bool InitHooks() {
     MH_STATUS status;
+    LPVOID pOrigCreateFileW = NULL, pOrigCreateFileA = NULL;
 
     status = MH_Initialize();
     if (status != MH_OK) {
@@ -179,42 +129,41 @@ bool InitHooks() {
         return false;
     }
 
-    LPVOID pOrigCreateFileW, pOrigCreateFileA;
     status = MH_CreateHook(&CreateFileW, &MyCreateFileW, &pOrigCreateFileW);
     if (status != MH_OK) {
         fprintf(stderr, "Failed to create hook for CreateFileW: %s\n", MH_StatusToString(status));
-        MH_Uninitialize();  // Uninitialize MinHook on error
-        return false;
+        goto cleanup;
     }
 
     status = MH_CreateHook(&CreateFileA, &MyCreateFileA, &pOrigCreateFileA);
     if (status != MH_OK) {
         fprintf(stderr, "Failed to create hook for CreateFileA: %s\n", MH_StatusToString(status));
-        MH_RemoveHook(&CreateFileW);  // Remove previously created hook
-        MH_Uninitialize();  // Uninitialize MinHook on error
-        return false;
+        goto cleanup_remove_w;
     }
 
     status = MH_EnableHook(&CreateFileW);
     if (status != MH_OK) {
         fprintf(stderr, "Failed to enable hook for CreateFileW: %s\n", MH_StatusToString(status));
-        MH_RemoveHook(&CreateFileA);  // Remove previously created hooks
-        MH_RemoveHook(&CreateFileW);
-        MH_Uninitialize();  // Uninitialize MinHook on error
-        return false;
+        goto cleanup_remove_a;
     }
 
     status = MH_EnableHook(&CreateFileA);
     if (status != MH_OK) {
         fprintf(stderr, "Failed to enable hook for CreateFileA: %s\n", MH_StatusToString(status));
-        MH_RemoveHook(&CreateFileA);
-        MH_RemoveHook(&CreateFileW);
-        MH_Uninitialize();  // Uninitialize MinHook on error
-        return false;
+        goto cleanup_remove_w;
     }
 
     return true;
+
+cleanup_remove_a:
+    MH_RemoveHook(&CreateFileA);
+cleanup_remove_w:
+    MH_RemoveHook(&CreateFileW);
+cleanup:
+    MH_Uninitialize();
+    return false;
 }
+
 
 // Disable hooks and uninitialize MinHook library
 void UninitHooks() {
